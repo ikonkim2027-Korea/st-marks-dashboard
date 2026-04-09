@@ -109,7 +109,7 @@ const links: LinkItem[] = [
     name: "Athletics Livestream",
     url: "https://www.stmarksschool.org/athletics",
     icon: <Tv className="h-5 w-5" />,
-    color: "bg-navy/5 text-navy",
+    color: "bg-sm-navy/5 text-sm-navy",
     category: "Resources",
   },
   {
@@ -139,7 +139,7 @@ const links: LinkItem[] = [
     name: "Essential Dates",
     url: "https://www.stmarksschool.org/about/calendar",
     icon: <CalendarDays className="h-5 w-5" />,
-    color: "bg-gold/10 text-gold",
+    color: "bg-sm-gold/10 text-sm-gold",
     category: "Tools",
   },
   {
@@ -165,8 +165,8 @@ export default function QuickLinks() {
     <div className="widget-card p-5 col-span-full" id="links">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <ExternalLink className="h-4 w-4 text-gold" />
-          <h3 className="text-sm font-semibold text-text-secondary">
+          <ExternalLink className="h-4 w-4 text-sm-gold" />
+          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
             Quick Links
           </h3>
         </div>
@@ -174,7 +174,7 @@ export default function QuickLinks() {
           href="https://www.stmarksschool.org"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-navy hover:text-navy-light transition-colors"
+          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
         >
           School Website <ExternalLink className="h-3 w-3" />
         </a>
@@ -184,7 +184,7 @@ export default function QuickLinks() {
         const catLinks = links.filter((l) => l.category === cat);
         return (
           <div key={cat} className="mb-4 last:mb-0">
-            <h4 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
+            <h4 className="text-xs font-semibold text-sm-text-muted uppercase tracking-wider mb-2">
               {cat}
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
@@ -194,14 +194,14 @@ export default function QuickLinks() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 rounded-xl bg-cream/50 px-3 py-2.5 transition-all hover:bg-cream hover:shadow-sm group"
+                  className="flex items-center gap-2.5 rounded-xl bg-sm-cream/50 px-3 py-2.5 transition-all hover:bg-sm-cream hover:shadow-sm group"
                 >
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded-lg ${link.color} flex-shrink-0`}
                   >
                     {link.icon}
                   </div>
-                  <span className="text-xs font-medium text-text-primary group-hover:text-navy truncate">
+                  <span className="text-xs font-medium text-sm-text group-hover:text-sm-navy truncate">
                     {link.name}
                   </span>
                 </a>

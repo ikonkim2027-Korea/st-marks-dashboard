@@ -51,11 +51,11 @@ function getMockEvents(): CalendarEvent[] {
 }
 
 const categoryStyles: Record<string, { dot: string; bg: string }> = {
-  academic: { dot: "bg-navy", bg: "bg-navy/5" },
-  athletics: { dot: "bg-gold", bg: "bg-gold/10" },
+  academic: { dot: "bg-sm-navy", bg: "bg-sm-navy/5" },
+  athletics: { dot: "bg-sm-gold", bg: "bg-sm-gold/10" },
   arts: { dot: "bg-purple-500", bg: "bg-purple-50" },
-  community: { dot: "bg-success", bg: "bg-success/10" },
-  break: { dot: "bg-warning", bg: "bg-warning/10" },
+  community: { dot: "bg-sm-success", bg: "bg-sm-success/10" },
+  break: { dot: "bg-sm-orange", bg: "bg-sm-orange/10" },
 };
 
 export default function CalendarWidget() {
@@ -69,8 +69,8 @@ export default function CalendarWidget() {
     <div className="widget-card p-5" id="calendar">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-gold" />
-          <h3 className="text-sm font-semibold text-text-secondary">
+          <Calendar className="h-4 w-4 text-sm-gold" />
+          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
             Upcoming Events
           </h3>
         </div>
@@ -78,7 +78,7 @@ export default function CalendarWidget() {
           href="https://www.stmarksschool.org/about/calendar"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-navy hover:text-navy-light transition-colors"
+          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
         >
           Full Calendar <ArrowRight className="h-3 w-3" />
         </a>
@@ -96,22 +96,22 @@ export default function CalendarWidget() {
                 className={`mt-1.5 h-2 w-2 rounded-full flex-shrink-0 ${style.dot}`}
               />
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium text-text-primary">
+                <h4 className="text-sm font-medium text-sm-text">
                   {event.title}
                 </h4>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
-                  <span className="text-xs text-text-muted flex items-center gap-1">
+                  <span className="text-xs text-sm-text-muted flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
                     {event.date}
                   </span>
                   {event.time && (
-                    <span className="text-xs text-text-muted flex items-center gap-1">
+                    <span className="text-xs text-sm-text-muted flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {event.time}
                     </span>
                   )}
                   {event.location && (
-                    <span className="text-xs text-text-muted flex items-center gap-1">
+                    <span className="text-xs text-sm-text-muted flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {event.location}
                     </span>

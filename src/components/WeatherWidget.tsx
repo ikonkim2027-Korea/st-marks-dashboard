@@ -24,16 +24,16 @@ interface WeatherState {
 }
 
 function getWeatherIcon(icon: string) {
-  const cls = "h-10 w-10";
-  if (icon.includes("01")) return <Sun className={`${cls} text-gold`} />;
-  if (icon.includes("02")) return <CloudSun className={`${cls} text-gold`} />;
+  const cls = "h-9 w-9";
+  if (icon.includes("01")) return <Sun className={`${cls} text-sm-gold`} />;
+  if (icon.includes("02")) return <CloudSun className={`${cls} text-sm-gold`} />;
   if (icon.includes("03") || icon.includes("04"))
-    return <Cloud className={`${cls} text-text-muted`} />;
+    return <Cloud className={`${cls} text-sm-text-muted`} />;
   if (icon.includes("09") || icon.includes("10"))
     return <CloudRain className={`${cls} text-blue-400`} />;
   if (icon.includes("13"))
     return <CloudSnow className={`${cls} text-blue-300`} />;
-  return <Cloud className={`${cls} text-text-muted`} />;
+  return <Cloud className={`${cls} text-sm-text-muted`} />;
 }
 
 export default function WeatherWidget() {
@@ -56,55 +56,55 @@ export default function WeatherWidget() {
 
   if (error) {
     return (
-      <div className="widget-card p-5">
-        <h3 className="text-sm font-semibold text-text-secondary mb-3">Weather</h3>
-        <p className="text-xs text-text-muted">Unable to load weather data</p>
+      <div className="widget-card p-4 h-full">
+        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider mb-3">Weather</h3>
+        <p className="text-xs text-sm-text-muted">Unable to load weather data</p>
       </div>
     );
   }
 
   if (!weather) {
     return (
-      <div className="widget-card p-5">
-        <h3 className="text-sm font-semibold text-text-secondary mb-3">Weather</h3>
-        <div className="h-20 animate-pulse rounded-lg bg-cream" />
+      <div className="widget-card p-4 h-full">
+        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider mb-3">Weather</h3>
+        <div className="h-16 animate-pulse rounded-lg bg-sm-offwhite" />
       </div>
     );
   }
 
   return (
-    <div className="widget-card p-5 h-full flex flex-col">
-      <h3 className="text-sm font-semibold text-text-secondary mb-4">
+    <div className="widget-card p-4 h-full flex flex-col">
+      <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider mb-3">
         Southborough Weather
       </h3>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-1">
         <div className="flex items-center gap-3">
           {getWeatherIcon(weather.icon)}
           <div>
-            <p className="text-3xl font-bold text-text-primary">
+            <p className="text-2xl font-bold text-sm-text">
               {Math.round(weather.temp)}°F
             </p>
-            <p className="text-sm capitalize text-text-muted">
+            <p className="text-xs capitalize text-sm-text-muted">
               {weather.description}
             </p>
           </div>
         </div>
-        <div className="text-right text-xs text-text-muted space-y-1.5">
+        <div className="text-right text-[11px] text-sm-text-muted space-y-1">
           <p className="flex items-center justify-end gap-1">
-            <Thermometer className="h-3.5 w-3.5" />
+            <Thermometer className="h-3 w-3" />
             Feels {Math.round(weather.feelsLike)}°F
           </p>
           <p className="flex items-center justify-end gap-1">
-            <Wind className="h-3.5 w-3.5" />
+            <Wind className="h-3 w-3" />
             {Math.round(weather.windSpeed)} mph
           </p>
           <p className="flex items-center justify-end gap-1">
-            <Droplets className="h-3.5 w-3.5" />
+            <Droplets className="h-3 w-3" />
             {weather.humidity}%
           </p>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs text-text-muted">
+      <div className="mt-2 flex items-center justify-between border-t border-sm-border pt-2 text-[11px] text-sm-text-muted">
         <span>H: {Math.round(weather.high)}°F</span>
         <span>L: {Math.round(weather.low)}°F</span>
       </div>

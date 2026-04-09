@@ -66,7 +66,7 @@ export default function SocialHub() {
   return (
     <div className="widget-card p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-text-secondary">
+        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
           Follow SM Lions
         </h3>
       </div>
@@ -82,14 +82,14 @@ export default function SocialHub() {
           >
             <span className="text-xl">{social.icon}</span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-text-primary">
+              <p className="text-xs font-semibold text-sm-text">
                 {social.platform}
               </p>
-              <p className="text-[11px] text-text-muted truncate">
+              <p className="text-[11px] text-sm-text-muted truncate">
                 {social.handle}
               </p>
             </div>
-            <ExternalLink className="h-3 w-3 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+            <ExternalLink className="h-3 w-3 text-sm-text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
           </a>
         ))}
       </div>

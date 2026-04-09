@@ -37,10 +37,10 @@ function getMockNews(): NewsItem[] {
 }
 
 const categoryColors: Record<string, string> = {
-  Newsletter: "bg-navy/10 text-navy",
-  Academics: "bg-success/15 text-success",
+  Newsletter: "bg-sm-navy/10 text-sm-navy",
+  Academics: "bg-sm-success/15 text-sm-success",
   Arts: "bg-purple-100 text-purple-700",
-  Athletics: "bg-gold/20 text-gold",
+  Athletics: "bg-sm-gold/20 text-sm-gold",
   Community: "bg-blue-100 text-blue-700",
 };
 
@@ -55,8 +55,8 @@ export default function SchoolNews() {
     <div className="widget-card p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Newspaper className="h-4 w-4 text-gold" />
-          <h3 className="text-sm font-semibold text-text-secondary">
+          <Newspaper className="h-4 w-4 text-sm-gold" />
+          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
             School News
           </h3>
         </div>
@@ -64,7 +64,7 @@ export default function SchoolNews() {
           href="https://www.stmarksschool.org/about/news"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-navy hover:text-navy-light transition-colors"
+          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
         >
           All News <ArrowRight className="h-3 w-3" />
         </a>
@@ -76,10 +76,10 @@ export default function SchoolNews() {
           href={news[0].link}
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-xl bg-navy/5 p-4 mb-3 hover:bg-navy/8 transition-colors group"
+          className="block rounded-xl bg-sm-navy/5 p-4 mb-3 hover:bg-sm-navy/8 transition-colors group"
         >
           <div className="flex items-center gap-2 mb-1.5">
-            <Bell className="h-3.5 w-3.5 text-gold" />
+            <Bell className="h-3.5 w-3.5 text-sm-gold" />
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
                 categoryColors[news[0].category] ?? "bg-gray-100 text-gray-600"
@@ -87,12 +87,12 @@ export default function SchoolNews() {
             >
               {news[0].category}
             </span>
-            <span className="text-[11px] text-text-muted">{news[0].date}</span>
+            <span className="text-[11px] text-sm-text-muted">{news[0].date}</span>
           </div>
-          <h4 className="text-sm font-semibold text-text-primary group-hover:text-navy transition-colors">
+          <h4 className="text-sm font-semibold text-sm-text group-hover:text-sm-navy transition-colors">
             {news[0].title}
           </h4>
-          <p className="text-xs text-text-muted mt-1 line-clamp-2">
+          <p className="text-xs text-sm-text-muted mt-1 line-clamp-2">
             {news[0].summary}
           </p>
         </a>
@@ -106,10 +106,10 @@ export default function SchoolNews() {
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-3 rounded-lg px-3 py-2 hover:bg-cream/50 transition-colors"
+            className="flex items-start gap-3 rounded-lg px-3 py-2 hover:bg-sm-cream/50 transition-colors"
           >
             <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-text-primary truncate">
+              <h4 className="text-sm font-medium text-sm-text truncate">
                 {item.title}
               </h4>
               <div className="flex items-center gap-2 mt-0.5">
@@ -120,7 +120,7 @@ export default function SchoolNews() {
                 >
                   {item.category}
                 </span>
-                <span className="text-[11px] text-text-muted">{item.date}</span>
+                <span className="text-[11px] text-sm-text-muted">{item.date}</span>
               </div>
             </div>
           </a>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, Clock, Sun } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 
 function getGreeting(hour: number): string {
   if (hour < 12) return "Good Morning";
@@ -12,9 +12,9 @@ function getGreeting(hour: number): string {
 function getDayType(date: Date): { label: string; color: string } {
   const day = date.getDay();
   if (day === 0 || day === 6) {
-    return { label: "Weekend", color: "bg-gold/20 text-gold" };
+    return { label: "Weekend", color: "bg-sm-gold/20 text-sm-gold" };
   }
-  return { label: "School Day", color: "bg-success/20 text-success" };
+  return { label: "School Day", color: "bg-sm-success/20 text-sm-success" };
 }
 
 export default function TodayOverview() {
@@ -28,8 +28,8 @@ export default function TodayOverview() {
 
   if (!now) {
     return (
-      <div className="hero-gradient rounded-2xl p-8 text-white">
-        <div className="h-24 animate-pulse rounded-lg bg-white/10" />
+      <div className="hero-gradient rounded-xl p-5 text-white h-full">
+        <div className="h-20 animate-pulse rounded-lg bg-white/10" />
       </div>
     );
   }
@@ -47,36 +47,36 @@ export default function TodayOverview() {
   });
 
   return (
-    <div className="hero-gradient rounded-2xl p-5 sm:p-6 text-white h-full">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-white/60 mb-1">
-            {getGreeting(now.getHours())}, Lions
-          </p>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            St. Mark&apos;s School
-          </h2>
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-white/80">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="h-4 w-4" />
-              {dateStr}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-4 w-4" />
-              {timeStr}
-            </span>
-          </div>
+    <div className="hero-gradient rounded-xl p-5 text-white h-full flex flex-col justify-between">
+      <div>
+        <p className="text-xs font-medium text-white/50 uppercase tracking-widest mb-1">
+          {getGreeting(now.getHours())}, Lions
+        </p>
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
+          St. Mark&apos;s School
+        </h2>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-white/70">
+          <span className="flex items-center gap-1">
+            <Calendar className="h-3.5 w-3.5" />
+            {dateStr}
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5" />
+            {timeStr}
+          </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${dayType.color}`}
+            className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${dayType.color}`}
           >
             {dayType.label}
           </span>
-          <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs">
-            <Sun className="h-3.5 w-3.5 text-gold" />
-            <span>Southborough, MA</span>
-          </div>
+          <span className="flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] text-white/60">
+            <MapPin className="h-3 w-3" />
+            Southborough, MA
+          </span>
         </div>
       </div>
     </div>

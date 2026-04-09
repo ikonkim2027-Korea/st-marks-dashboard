@@ -52,10 +52,10 @@ export default function LunchMenu() {
   if (!menu) {
     return (
       <div className="widget-card p-5">
-        <h3 className="text-sm font-semibold text-text-secondary mb-3">
+        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider mb-3">
           Today&apos;s Menu
         </h3>
-        <div className="h-32 animate-pulse rounded-lg bg-cream" />
+        <div className="h-32 animate-pulse rounded-lg bg-sm-cream" />
       </div>
     );
   }
@@ -66,8 +66,8 @@ export default function LunchMenu() {
     <div className="widget-card p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <UtensilsCrossed className="h-4 w-4 text-gold" />
-          <h3 className="text-sm font-semibold text-text-secondary">
+          <UtensilsCrossed className="h-4 w-4 text-sm-gold" />
+          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
             Today&apos;s Menu
           </h3>
         </div>
@@ -75,20 +75,20 @@ export default function LunchMenu() {
           href="https://sms.flikisdining.com/"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-navy hover:text-navy-light transition-colors"
+          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
         >
           Full Menu <ExternalLink className="h-3 w-3" />
         </a>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-lg bg-cream p-0.5 mb-4">
+      <div className="flex gap-1 rounded-lg bg-sm-cream p-0.5 mb-4">
         <button
           onClick={() => setActiveTab("diningHall")}
           className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
             activeTab === "diningHall"
-              ? "bg-white text-navy shadow-sm"
-              : "text-text-muted hover:text-text-secondary"
+              ? "bg-white text-sm-navy shadow-sm"
+              : "text-sm-text-muted hover:text-sm-text-light"
           }`}
         >
           Dining Hall
@@ -97,8 +97,8 @@ export default function LunchMenu() {
           onClick={() => setActiveTab("lionsDen")}
           className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
             activeTab === "lionsDen"
-              ? "bg-white text-navy shadow-sm"
-              : "text-text-muted hover:text-text-secondary"
+              ? "bg-white text-sm-navy shadow-sm"
+              : "text-sm-text-muted hover:text-sm-text-light"
           }`}
         >
           Lion&apos;s Den
@@ -110,17 +110,17 @@ export default function LunchMenu() {
         {items.map((item, i) => (
           <li
             key={i}
-            className="flex items-center justify-between rounded-lg bg-cream/50 px-3 py-2"
+            className="flex items-center justify-between rounded-lg bg-sm-cream/50 px-3 py-2"
           >
-            <span className="text-sm text-text-primary">{item.name}</span>
+            <span className="text-sm text-sm-text">{item.name}</span>
             {item.isVegetarian && (
-              <Leaf className="h-3.5 w-3.5 text-success flex-shrink-0" />
+              <Leaf className="h-3.5 w-3.5 text-sm-success flex-shrink-0" />
             )}
           </li>
         ))}
       </ul>
 
-      <p className="mt-3 text-[11px] text-text-muted text-center">
+      <p className="mt-3 text-[11px] text-sm-text-muted text-center">
         Powered by FLIK Dining Services
       </p>
     </div>

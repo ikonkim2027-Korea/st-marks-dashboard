@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import TodayOverview from "@/components/TodayOverview";
 import WeatherWidget from "@/components/WeatherWidget";
+import CanvasAssignments from "@/components/CanvasAssignments";
 import LunchMenu from "@/components/LunchMenu";
 import Athletics from "@/components/Athletics";
 import SchoolNews from "@/components/SchoolNews";
@@ -14,7 +15,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="flex-1 mx-auto w-full max-w-[1400px] px-4 sm:px-6 py-4">
+      <main className="flex-1 mx-auto w-full max-w-full px-8 xl:px-10 py-4">
         {/* Dashboard Grid — optimized for MacBook 1440x900 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {/* Row 1: Hero (compact) + Weather side-by-side on lg */}
@@ -25,14 +26,18 @@ export default function Home() {
             <WeatherWidget />
           </div>
 
-          {/* Row 2: Lunch + News + Athletics */}
-          <LunchMenu />
+          {/* Row 2: Canvas Assignments + News + Athletics */}
+          <CanvasAssignments />
           <SchoolNews />
           <Athletics />
 
-          {/* Row 3: Calendar + Social + Lion's Corner */}
+          {/* Row 3: Lunch + Calendar + Social */}
+          <LunchMenu />
+
           <CalendarWidget />
           <SocialHub />
+
+          {/* Row 4: Lion's Corner spans into Quick Links row */}
           <LionsCorner />
 
           {/* Row 4: Quick Links - Full Width */}
@@ -41,37 +46,44 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-white py-4">
-        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+      <footer className="border-t border-sm-border bg-white py-4">
+        <div className="mx-auto max-w-full px-8 xl:px-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="text-lg">🦁</span>
               <div>
-                <p className="text-sm font-semibold text-navy">SM Hub</p>
-                <p className="text-[11px] text-text-muted">
+                <p className="text-sm font-semibold text-sm-navy">SM Hub</p>
+                <p className="text-[11px] text-sm-text-muted">
                   St. Mark&apos;s School &middot; 25 Marlboro Road, Southborough,
                   MA 01772
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-xs text-text-muted">
-              <a
-                href="https://www.stmarksschool.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-navy transition-colors"
-              >
-                School Website
-              </a>
-              <span>&middot;</span>
-              <a
-                href="tel:5087866000"
-                className="hover:text-navy transition-colors"
-              >
-                508.786.6000
-              </a>
-              <span>&middot;</span>
-              <span>Made with pride by SM students</span>
+            <div className="flex flex-col items-end gap-1">
+              <div className="flex items-center gap-4 text-xs text-sm-text-muted">
+                <a
+                  href="https://www.stmarksschool.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-sm-navy transition-colors"
+                >
+                  School Website
+                </a>
+                <span>&middot;</span>
+                <span>508.786.6000</span>
+              </div>
+              <p className="text-[10px] text-sm-text-muted">
+                Developed by{" "}
+                <span className="font-medium text-sm-text-light">Ikon Kim</span>
+                {" "}&middot;{" "}
+                <a
+                  href="mailto:ikonkim@stmarksschool.org"
+                  className="hover:text-sm-navy transition-colors underline underline-offset-2"
+                >
+                  ikonkim@stmarksschool.org
+                </a>
+                {" "}for questions, issues &amp; suggestions
+              </p>
             </div>
           </div>
         </div>

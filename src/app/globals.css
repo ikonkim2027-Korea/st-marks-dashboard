@@ -1,87 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #1B2A4A;
-  --navy-light: #2A3F6B;
-  --navy-dark: #111D33;
-  --gold: #C9A84C;
-  --gold-light: #E8D48B;
-  --cream: #F8F6F0;
-  --white: #FFFFFF;
-  --text-primary: #1A1A2E;
-  --text-secondary: #4A5568;
-  --text-muted: #718096;
-  --border: #E2E8F0;
-  --success: #38A169;
-  --warning: #DD6B20;
-  --danger: #E53E3E;
+  /* St. Mark's School Official CI Colors */
+  --sm-navy: #003057;
+  --sm-navy-light: #0A4A7A;
+  --sm-navy-dark: #001F3A;
+  --sm-gold: #C4A442;
+  --sm-gold-light: #D4BC6A;
+  --sm-orange: #E87722;
+  --sm-white: #FFFFFF;
+  --sm-offwhite: #F8F8F8;
+  --sm-cream: #F5F3EE;
+  --sm-text: #373737;
+  --sm-text-light: #5A5A5A;
+  --sm-text-muted: #8A8A8A;
+  --sm-border: #E5E5E5;
+  --sm-success: #2D7D46;
+  --sm-danger: #C53030;
 }
 
 @theme inline {
-  --color-navy: var(--navy);
-  --color-navy-light: var(--navy-light);
-  --color-navy-dark: var(--navy-dark);
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-cream: var(--cream);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-border: var(--border);
-  --color-success: var(--success);
-  --color-warning: var(--warning);
-  --color-danger: var(--danger);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sm-navy: var(--sm-navy);
+  --color-sm-navy-light: var(--sm-navy-light);
+  --color-sm-navy-dark: var(--sm-navy-dark);
+  --color-sm-gold: var(--sm-gold);
+  --color-sm-gold-light: var(--sm-gold-light);
+  --color-sm-orange: var(--sm-orange);
+  --color-sm-offwhite: var(--sm-offwhite);
+  --color-sm-cream: var(--sm-cream);
+  --color-sm-text: var(--sm-text);
+  --color-sm-text-light: var(--sm-text-light);
+  --color-sm-text-muted: var(--sm-text-muted);
+  --color-sm-border: var(--sm-border);
+  --color-sm-success: var(--sm-success);
+  --color-sm-danger: var(--sm-danger);
+  --font-sans: var(--font-montserrat);
 }
 
 body {
-  background: var(--cream);
-  color: var(--text-primary);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background: var(--sm-offwhite);
+  color: var(--sm-text);
+  font-family: var(--font-sans), "Montserrat", system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--cream);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--navy-light);
-  border-radius: 3px;
+html {
+  overflow-x: hidden;
 }
 
-/* Widget card base */
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--sm-offwhite); }
+::-webkit-scrollbar-thumb { background: var(--sm-navy); border-radius: 3px; opacity: 0.5; }
+
+/* Widget card */
 .widget-card {
-  background: var(--white);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(27, 42, 74, 0.06), 0 1px 2px rgba(27, 42, 74, 0.04);
+  background: var(--sm-white);
+  border-radius: 12px;
+  border: 1px solid var(--sm-border);
+  box-shadow: 0 1px 2px rgba(0, 48, 87, 0.04);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .widget-card:hover {
-  box-shadow: 0 4px 12px rgba(27, 42, 74, 0.1), 0 2px 4px rgba(27, 42, 74, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 48, 87, 0.08);
   transform: translateY(-1px);
 }
 
-/* Animated gradient for hero */
+/* Hero gradient */
 @keyframes gradientShift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
 .hero-gradient {
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 50%, var(--navy) 100%);
+  background: linear-gradient(135deg, #001F3A 0%, #003057 40%, #0A4A7A 100%);
   background-size: 200% 200%;
-  animation: gradientShift 8s ease infinite;
+  animation: gradientShift 12s ease infinite;
 }
 
-/* Pulse for live indicator */
+/* Pulse */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
-.pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
-}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }

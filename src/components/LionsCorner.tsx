@@ -51,32 +51,32 @@ export default function LionsCorner() {
   return (
     <div className="widget-card p-5">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="h-4 w-4 text-gold" />
-        <h3 className="text-sm font-semibold text-text-secondary">
+        <Sparkles className="h-4 w-4 text-sm-gold" />
+        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
           Lion&apos;s Corner
         </h3>
       </div>
 
       {/* Quote of the day */}
-      <div className="rounded-xl bg-navy/5 p-4 mb-3">
+      <div className="rounded-xl bg-sm-navy/5 p-4 mb-3">
         <div className="flex items-start gap-2">
-          <BookOpen className="h-4 w-4 text-navy mt-0.5 flex-shrink-0" />
+          <BookOpen className="h-4 w-4 text-sm-navy mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm italic text-text-primary leading-relaxed">
+            <p className="text-sm italic text-sm-text leading-relaxed">
               &ldquo;{quote.text}&rdquo;
             </p>
-            <p className="text-xs text-text-muted mt-1.5">— {quote.source}</p>
+            <p className="text-xs text-sm-text-muted mt-1.5">— {quote.source}</p>
           </div>
         </div>
       </div>
 
       {/* Did you know */}
-      <div className="rounded-xl bg-gold/5 p-4">
+      <div className="rounded-xl bg-sm-gold/5 p-4">
         <div className="flex items-start gap-2">
-          <Flame className="h-4 w-4 text-gold mt-0.5 flex-shrink-0" />
+          <Flame className="h-4 w-4 text-sm-gold mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-xs font-semibold text-gold mb-1">Did You Know?</p>
-            <p className="text-sm text-text-primary leading-relaxed">
+            <p className="text-xs font-semibold text-sm-gold mb-1">Did You Know?</p>
+            <p className="text-sm text-sm-text leading-relaxed">
               {tradition}
             </p>
           </div>
@@ -85,17 +85,17 @@ export default function LionsCorner() {
 
       {/* Quick stats */}
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg bg-cream/50 p-2.5 text-center">
-          <p className="text-lg font-bold text-navy">1865</p>
-          <p className="text-[10px] text-text-muted">Founded</p>
+        <div className="rounded-lg bg-sm-cream/50 p-2.5 text-center">
+          <p className="text-lg font-bold text-sm-navy">1865</p>
+          <p className="text-[10px] text-sm-text-muted">Founded</p>
         </div>
-        <div className="rounded-lg bg-cream/50 p-2.5 text-center">
-          <p className="text-lg font-bold text-navy">377</p>
-          <p className="text-[10px] text-text-muted">Students</p>
+        <div className="rounded-lg bg-sm-cream/50 p-2.5 text-center">
+          <p className="text-lg font-bold text-sm-navy">377</p>
+          <p className="text-[10px] text-sm-text-muted">Students</p>
         </div>
-        <div className="rounded-lg bg-cream/50 p-2.5 text-center">
-          <p className="text-lg font-bold text-navy">210</p>
-          <p className="text-[10px] text-text-muted">Acres</p>
+        <div className="rounded-lg bg-sm-cream/50 p-2.5 text-center">
+          <p className="text-lg font-bold text-sm-navy">210</p>
+          <p className="text-[10px] text-sm-text-muted">Acres</p>
         </div>
       </div>
     </div>
