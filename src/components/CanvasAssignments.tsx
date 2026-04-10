@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Settings,
   X,
+  Info,
 } from "lucide-react";
 
 interface Assignment {
@@ -66,7 +67,6 @@ export default function CanvasAssignments() {
   const [tokenInput, setTokenInput] = useState("");
   const [domainInput, setDomainInput] = useState("stmarks.instructure.com");
 
-  // Load config from localStorage
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -100,7 +100,6 @@ export default function CanvasAssignments() {
     }
   }, []);
 
-  // Fetch when config is available
   useEffect(() => {
     if (config) {
       fetchAssignments(config);
@@ -126,7 +125,7 @@ export default function CanvasAssignments() {
     setShowSetup(false);
   }
 
-  // No config — show setup prompt
+  // No config — show connect prompt
   if (!config && !showSetup) {
     return (
       <div className="widget-card p-5">
@@ -134,24 +133,40 @@ export default function CanvasAssignments() {
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-sm-orange" />
             <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-              Assignments Due
+              Canvas Assignments
             </h3>
           </div>
         </div>
         <div className="rounded-xl bg-sm-navy/5 p-4 text-center">
           <BookOpen className="h-8 w-8 text-sm-navy/30 mx-auto mb-2" />
           <p className="text-sm font-medium text-sm-text mb-1">
-            Connect Your Canvas
+            Connect Canvas LMS
           </p>
-          <p className="text-xs text-sm-text-muted mb-3">
-            See upcoming assignments from all your courses
+          <p className="text-xs text-sm-text-muted mb-3 leading-relaxed">
+            View upcoming assignments from all your courses.
+            <br />
+            Requires an API token from IT.
           </p>
           <button
             onClick={() => setShowSetup(true)}
             className="rounded-lg bg-sm-navy px-4 py-2 text-xs font-medium text-white hover:bg-sm-navy-light transition-colors"
           >
-            Set Up Canvas
+            Enter API Token
           </button>
+        </div>
+        <div className="mt-3 rounded-lg bg-sm-gold/5 px-3 py-2 flex items-start gap-2">
+          <Info className="h-3.5 w-3.5 text-sm-gold mt-0.5 flex-shrink-0" />
+          <p className="text-[10px] text-sm-text-muted leading-relaxed">
+            Student token generation is disabled by the school.
+            Contact{" "}
+            <a
+              href="mailto:ikonkim@stmarksschool.org"
+              className="underline underline-offset-2 hover:text-sm-navy"
+            >
+              ikonkim@stmarksschool.org
+            </a>
+            {" "}or IT Help Desk for an API token.
+          </p>
         </div>
       </div>
     );
@@ -190,17 +205,17 @@ export default function CanvasAssignments() {
           </div>
           <div>
             <label className="text-xs font-medium text-sm-text-light block mb-1">
-              Access Token
+              API Token
             </label>
             <input
               type="password"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
-              placeholder="Paste your Canvas access token"
+              placeholder="Paste the token from IT"
               className="w-full rounded-lg border border-sm-border bg-sm-offwhite px-3 py-2 text-xs text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:ring-2 focus:ring-sm-navy/20"
             />
             <p className="text-[10px] text-sm-text-muted mt-1">
-              Canvas &rarr; Account &rarr; Settings &rarr; New Access Token
+              Token is stored locally in your browser only.
             </p>
           </div>
           <div className="flex gap-2">
@@ -232,12 +247,15 @@ export default function CanvasAssignments() {
         <div className="flex items-center gap-2 mb-3">
           <BookOpen className="h-4 w-4 text-sm-orange" />
           <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-            Assignments Due
+            Canvas Assignments
           </h3>
         </div>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 animate-pulse rounded-lg bg-sm-cream" />
+            <div
+              key={i}
+              className="h-12 animate-pulse rounded-lg bg-sm-cream"
+            />
           ))}
         </div>
       </div>
@@ -252,7 +270,7 @@ export default function CanvasAssignments() {
           <div className="flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-sm-orange" />
             <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-              Assignments Due
+              Canvas Assignments
             </h3>
           </div>
           <button
@@ -278,8 +296,7 @@ export default function CanvasAssignments() {
 
   // Assignments list
   const pending = assignments.filter(
-    (a) =>
-      a.due_at && a.submission?.workflow_state !== "graded"
+    (a) => a.due_at && a.submission?.workflow_state !== "graded"
   );
 
   return (
@@ -288,7 +305,7 @@ export default function CanvasAssignments() {
         <div className="flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-sm-orange" />
           <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-            Assignments Due
+            Canvas Assignments
           </h3>
           {pending.length > 0 && (
             <span className="rounded-full bg-sm-orange/15 px-1.5 py-0.5 text-[10px] font-bold text-sm-orange">
@@ -335,7 +352,7 @@ export default function CanvasAssignments() {
                       {a.course_name}
                     </span>
                     {a.due_at && (
-                      <span className="text-[11px] text-sm-text-muted flex items-center gap-0.5">
+                      <span className="text-[11px] text-sm-text-muted flex items-center gap-0.5 flex-shrink-0">
                         <Clock className="h-3 w-3" />
                         {formatDueDate(a.due_at)}
                       </span>
