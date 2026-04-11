@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Newspaper, ArrowRight, Bell } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 import type { NewsItem } from "@/types";
 
 function getMockNews(): NewsItem[] {
@@ -13,6 +14,7 @@ function getMockNews(): NewsItem[] {
         "News and updates for current students and families including Spirit Week details and Groton Day preparations.",
       date: "Apr 9, 2026",
       category: "Newsletter",
+      imageUrl: "/photos/campus-flower.jpg",
       link: "https://www.stmarksschool.org",
     },
     {
@@ -33,16 +35,26 @@ function getMockNews(): NewsItem[] {
       category: "Arts",
       link: "https://www.stmarksschool.org",
     },
+    {
+      id: "4",
+      title: "Lions Win ISL Championship",
+      summary: "Boys varsity squash takes home the title.",
+      date: "Apr 2, 2026",
+      category: "Athletics",
+      link: "https://www.stmarksschool.org",
+    },
   ];
 }
 
-const categoryColors: Record<string, string> = {
-  Newsletter: "bg-sm-navy/10 text-sm-navy",
-  Academics: "bg-sm-success/15 text-sm-success",
-  Arts: "bg-purple-100 text-purple-700",
-  Athletics: "bg-sm-gold/20 text-sm-gold",
-  Community: "bg-blue-100 text-blue-700",
-};
+function formatDate(date: string): string {
+  const d = new Date(date);
+  const day = d.getDate();
+  const month = d
+    .toLocaleString("en-US", { month: "short" })
+    .toUpperCase();
+  const year = d.getFullYear().toString().slice(-2);
+  return `${day} ${month} ${year}`;
+}
 
 export default function SchoolNews() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -51,78 +63,88 @@ export default function SchoolNews() {
     setNews(getMockNews());
   }, []);
 
+  if (news.length === 0) {
+    return (
+      <div className="widget-card p-6 h-full">
+        <div className="flex items-center gap-2 mb-5">
+          <span className="divider-gold" />
+          <span className="label-micro">School News</span>
+        </div>
+        <div className="h-32 animate-pulse rounded bg-sm-cream" />
+      </div>
+    );
+  }
+
+  const [featured, ...rest] = news;
+
   return (
-    <div className="widget-card p-5">
-      <div className="flex items-center justify-between mb-4">
+    <div className="widget-card p-6 h-full flex flex-col">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Newspaper className="h-4 w-4 text-sm-gold" />
-          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-            School News
-          </h3>
+          <span className="divider-gold" />
+          <span className="label-micro">School News</span>
         </div>
         <a
           href="https://www.stmarksschool.org/about/news"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
+          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
         >
-          All News <ArrowRight className="h-3 w-3" />
+          All
+          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </a>
       </div>
 
-      {/* Featured / latest */}
-      {news.length > 0 && (
-        <a
-          href={news[0].link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-xl bg-sm-navy/5 p-4 mb-3 hover:bg-sm-navy/8 transition-colors group"
-        >
-          <div className="flex items-center gap-2 mb-1.5">
-            <Bell className="h-3.5 w-3.5 text-sm-gold" />
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
-                categoryColors[news[0].category] ?? "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {news[0].category}
-            </span>
-            <span className="text-[11px] text-sm-text-muted">{news[0].date}</span>
+      {/* Featured */}
+      <a
+        href={featured.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block group"
+      >
+        {featured.imageUrl && (
+          <div className="relative aspect-[16/9] overflow-hidden rounded-md mb-3">
+            <Image
+              src={featured.imageUrl}
+              alt={featured.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 1024px) 100vw, 33vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-sm-navy/40 via-transparent to-transparent" />
+            <div className="absolute bottom-2 left-2">
+              <span className="inline-block px-2 py-0.5 bg-white/95 text-[9px] font-bold uppercase tracking-[0.15em] text-sm-navy">
+                {featured.category}
+              </span>
+            </div>
           </div>
-          <h4 className="text-sm font-semibold text-sm-text group-hover:text-sm-navy transition-colors">
-            {news[0].title}
-          </h4>
-          <p className="text-xs text-sm-text-muted mt-1 line-clamp-2">
-            {news[0].summary}
-          </p>
-        </a>
-      )}
+        )}
+        <p className="text-[10px] text-sm-text-muted tracking-[0.12em] tabular mb-1">
+          {formatDate(featured.date)}
+        </p>
+        <h4 className="text-sm font-bold text-sm-text leading-snug group-hover:text-sm-navy transition-colors">
+          {featured.title}
+        </h4>
+      </a>
 
-      {/* Other news */}
-      <div className="space-y-2">
-        {news.slice(1).map((item) => (
+      {/* Rest */}
+      <div className="mt-5 pt-4 border-t border-sm-border/60 space-y-3 flex-1">
+        {rest.map((item) => (
           <a
             key={item.id}
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-3 rounded-lg px-3 py-2 hover:bg-sm-cream/50 transition-colors"
+            className="block group border-l border-sm-border/80 hover:border-sm-gold pl-3 transition-colors"
           >
-            <div className="flex-1 min-w-0">
-              <h4 className="text-sm font-medium text-sm-text truncate">
-                {item.title}
-              </h4>
-              <div className="flex items-center gap-2 mt-0.5">
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                    categoryColors[item.category] ?? "bg-gray-100 text-gray-600"
-                  }`}
-                >
-                  {item.category}
-                </span>
-                <span className="text-[11px] text-sm-text-muted">{item.date}</span>
-              </div>
-            </div>
+            <p className="text-[9px] text-sm-text-muted tracking-[0.12em] tabular mb-0.5">
+              {formatDate(item.date)}
+              <span className="mx-1.5 text-sm-border">·</span>
+              <span className="uppercase">{item.category}</span>
+            </p>
+            <h4 className="text-xs font-semibold text-sm-text leading-snug group-hover:text-sm-navy transition-colors">
+              {item.title}
+            </h4>
           </a>
         ))}
       </div>

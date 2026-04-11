@@ -1,95 +1,81 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
+import Image from "next/image";
 
 interface SocialLink {
   platform: string;
   url: string;
   handle: string;
-  icon: string;
-  color: string;
-  hoverColor: string;
+  iconPath: string;
 }
 
 const socials: SocialLink[] = [
   {
     platform: "Instagram",
-    url: "https://www.instagram.com/stmarksschool/",
-    handle: "@stmarksschool",
-    icon: "📸",
-    color: "bg-gradient-to-br from-purple-50 to-pink-50",
-    hoverColor: "hover:from-purple-100 hover:to-pink-100",
+    url: "https://www.instagram.com/smlions/",
+    handle: "@smlions",
+    iconPath: "/icons/brands/instagram.svg",
   },
   {
     platform: "Facebook",
     url: "https://www.facebook.com/smlionsMA/",
-    handle: "St. Mark's Lions",
-    icon: "📘",
-    color: "bg-blue-50",
-    hoverColor: "hover:bg-blue-100",
+    handle: "SM Lions",
+    iconPath: "/icons/brands/facebook.svg",
   },
   {
-    platform: "X (Twitter)",
-    url: "https://twitter.com/staborough",
-    handle: "@staborough",
-    icon: "🐦",
-    color: "bg-sky-50",
-    hoverColor: "hover:bg-sky-100",
+    platform: "X",
+    url: "https://x.com/SMLions",
+    handle: "@SMLions",
+    iconPath: "/icons/brands/x.svg",
   },
   {
     platform: "YouTube",
-    url: "https://www.youtube.com/channel/UCstmarksschool",
-    handle: "St. Mark's School",
-    icon: "🎬",
-    color: "bg-red-50",
-    hoverColor: "hover:bg-red-100",
+    url: "https://www.youtube.com/@SMLions",
+    handle: "@SMLions",
+    iconPath: "/icons/brands/youtube.svg",
   },
   {
     platform: "LinkedIn",
-    url: "https://www.linkedin.com/school/st-mark's-school/",
-    handle: "St. Mark's School",
-    icon: "💼",
-    color: "bg-blue-50",
-    hoverColor: "hover:bg-blue-100",
+    url: "https://www.linkedin.com/school/smlions/",
+    handle: "SM Lions",
+    iconPath: "/icons/brands/linkedin.svg",
   },
   {
-    platform: "SmugMug Photos",
-    url: "https://stmarksschool.smugmug.com/",
+    platform: "SmugMug",
+    url: "https://stmarkslions.smugmug.com/",
     handle: "Campus Photos",
-    icon: "📷",
-    color: "bg-green-50",
-    hoverColor: "hover:bg-green-100",
+    iconPath: "/icons/brands/smugmug.svg",
   },
 ];
 
 export default function SocialHub() {
   return (
-    <div className="widget-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-          Follow SM Lions
-        </h3>
+    <div className="widget-card p-6 h-full flex flex-col">
+      <div className="flex items-center gap-2 mb-5">
+        <span className="divider-gold" />
+        <span className="label-micro">Follow SM Lions</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2 flex-1">
         {socials.map((social) => (
           <a
             key={social.platform}
             href={social.url}
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-2.5 rounded-xl px-3 py-3 transition-all group ${social.color} ${social.hoverColor}`}
+            title={`${social.platform} — ${social.handle}`}
+            className="group flex items-center gap-2.5 rounded-md border border-sm-border/60 bg-white px-3 py-3 transition-all hover:border-sm-navy hover:bg-sm-navy"
           >
-            <span className="text-xl">{social.icon}</span>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-sm-text">
-                {social.platform}
-              </p>
-              <p className="text-[11px] text-sm-text-muted truncate">
-                {social.handle}
-              </p>
-            </div>
-            <ExternalLink className="h-3 w-3 text-sm-text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+            <Image
+              src={social.iconPath}
+              alt={social.platform}
+              width={16}
+              height={16}
+              className="opacity-60 transition-all group-hover:opacity-100 group-hover:brightness-0 group-hover:invert flex-shrink-0"
+            />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-sm-text-light group-hover:text-white truncate">
+              {social.platform}
+            </span>
           </a>
         ))}
       </div>

@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trophy, MapPin, Calendar, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { AthleticsEvent } from "@/types";
 
-// Mock data — will be replaced with stmarksschool.org scraping
 function getMockEvents(): AthleticsEvent[] {
   return [
     {
@@ -61,74 +60,78 @@ export default function Athletics() {
   }, []);
 
   return (
-    <div className="widget-card p-5" id="athletics">
-      <div className="flex items-center justify-between mb-4">
+    <div className="widget-card p-6 h-full flex flex-col" id="athletics">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Trophy className="h-4 w-4 text-sm-gold" />
-          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-            Athletics — ISL
-          </h3>
+          <span className="divider-gold" />
+          <span className="label-micro">Athletics — ISL</span>
         </div>
         <a
           href="https://www.stmarksschool.org/athletics/schedule"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
+          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
         >
-          Full Schedule <ArrowRight className="h-3 w-3" />
+          Full Schedule
+          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </a>
       </div>
 
-      <div className="space-y-2">
-        {events.map((event) => (
-          <div
-            key={event.id}
-            className="flex items-center justify-between rounded-lg bg-sm-cream/50 px-3 py-2.5"
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-sm-text truncate">
-                  {event.sport}
-                </span>
-                <span
-                  className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                    event.location === "home"
-                      ? "bg-sm-navy/10 text-sm-navy"
-                      : "bg-sm-gold/20 text-sm-gold"
-                  }`}
-                >
-                  {event.location === "home" ? "HOME" : "AWAY"}
-                </span>
+      <div className="space-y-0 flex-1">
+        {events.map((event, idx) => {
+          const isNext = idx === 0 && !event.result;
+          return (
+            <div
+              key={event.id}
+              className={`flex items-center justify-between py-3 border-b border-sm-border/60 last:border-0 ${
+                isNext ? "border-l-2 border-l-sm-gold pl-3 -ml-3" : ""
+              }`}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-sm font-bold text-sm-text">
+                    {event.sport}
+                  </span>
+                  <span
+                    className={`text-[9px] font-bold tracking-[0.15em] ${
+                      event.location === "home"
+                        ? "text-sm-navy"
+                        : "text-sm-gold"
+                    }`}
+                  >
+                    {event.location === "home" ? "HOME" : "AWAY"}
+                  </span>
+                </div>
+                <p className="text-[11px] text-sm-text-muted tracking-wide">
+                  vs {event.opponent}
+                </p>
               </div>
-              <p className="text-xs text-sm-text-muted mt-0.5">
-                vs {event.opponent}
-              </p>
+              <div className="text-right flex-shrink-0 ml-3">
+                {event.result ? (
+                  <div>
+                    <span
+                      className={`display-number text-lg ${
+                        event.result.won ? "text-sm-success" : "text-sm-danger"
+                      }`}
+                    >
+                      {event.result.won ? "W" : "L"} {event.result.smScore}–
+                      {event.result.opponentScore}
+                    </span>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-bold text-sm-text tabular tracking-wide">
+                      {event.date.toUpperCase()}
+                    </p>
+                    <p className="text-[10px] text-sm-text-muted tabular mt-0.5">
+                      {event.time}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
-            <div className="text-right flex-shrink-0 ml-3">
-              {event.result ? (
-                <span
-                  className={`text-sm font-bold ${
-                    event.result.won ? "text-sm-success" : "text-sm-danger"
-                  }`}
-                >
-                  {event.result.won ? "W" : "L"} {event.result.smScore}-
-                  {event.result.opponentScore}
-                </span>
-              ) : (
-                <>
-                  <p className="text-xs font-medium text-sm-text flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {event.date}
-                  </p>
-                  <p className="text-[11px] text-sm-text-muted flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
-                    {event.time}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

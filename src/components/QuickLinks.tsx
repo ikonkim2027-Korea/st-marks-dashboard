@@ -13,80 +13,70 @@ import {
   FileText,
   Mail,
   Printer,
-  Wifi,
   BookMarked,
   PartyPopper,
   School,
   Shield,
-  ExternalLink,
+  ArrowUpRight,
 } from "lucide-react";
 
 interface LinkItem {
   name: string;
   url: string;
   icon: React.ReactNode;
-  color: string;
   category: string;
 }
 
 const links: LinkItem[] = [
-  // Academic & Learning
+  // Academic
   {
     name: "Canvas LMS",
-    url: "https://stmarks.instructure.com",
-    icon: <BookOpen className="h-5 w-5" />,
-    color: "bg-red-50 text-red-600",
+    url: "https://stmarksschool.instructure.com",
+    icon: <BookOpen className="h-4 w-4" />,
     category: "Academic",
   },
   {
-    name: "Blackbaud (Grades)",
-    url: "https://stmarksschool.myschoolapp.com",
-    icon: <GraduationCap className="h-5 w-5" />,
-    color: "bg-blue-50 text-blue-600",
+    name: "Blackbaud Portal",
+    url: "https://www.stmarksschool.org/login",
+    icon: <GraduationCap className="h-4 w-4" />,
     category: "Academic",
   },
   {
     name: "College Counseling",
-    url: "https://blogs.stmarksschool.org/collegecounseling/",
-    icon: <School className="h-5 w-5" />,
-    color: "bg-indigo-50 text-indigo-600",
+    url: "https://www.stmarksschool.org/academics/college-counseling",
+    icon: <School className="h-4 w-4" />,
     category: "Academic",
   },
   {
     name: "Library",
     url: "https://www.stmarksschool.org/academics/library",
-    icon: <BookMarked className="h-5 w-5" />,
-    color: "bg-amber-50 text-amber-700",
+    icon: <BookMarked className="h-4 w-4" />,
     category: "Academic",
   },
 
-  // Campus Life
+  // Campus
   {
     name: "Orah (Sign Out)",
     url: "https://www.stmarksschool.org/campus-life/residential-life/boardingware",
-    icon: <MapPin className="h-5 w-5" />,
-    color: "bg-green-50 text-green-600",
+    icon: <MapPin className="h-4 w-4" />,
     category: "Campus",
   },
   {
-    name: "FLIK Dining Menu",
+    name: "FLIK Dining",
     url: "https://sms.flikisdining.com/",
-    icon: <Utensils className="h-5 w-5" />,
-    color: "bg-orange-50 text-orange-600",
+    icon: <Utensils className="h-4 w-4" />,
     category: "Campus",
   },
   {
     name: "Weekend Activities",
     url: "https://www.stmarksschool.org/community/student-life/weekend-activities",
-    icon: <PartyPopper className="h-5 w-5" />,
-    color: "bg-pink-50 text-pink-600",
+    icon: <PartyPopper className="h-4 w-4" />,
     category: "Campus",
   },
   {
-    name: "Health Services",
+    name: "Student Handbook",
     url: "https://www.stmarksschool.org/community/student-life/student-handbook",
-    icon: <Heart className="h-5 w-5" />,
-    color: "bg-rose-50 text-rose-600",
+    icon: <FileText className="h-4 w-4" />,
     category: "Campus",
   },
 
@@ -94,66 +84,51 @@ const links: LinkItem[] = [
   {
     name: "School Store",
     url: "https://www.stmarksschool.org/community/school-store",
-    icon: <ShoppingBag className="h-5 w-5" />,
-    color: "bg-purple-50 text-purple-600",
+    icon: <ShoppingBag className="h-4 w-4" />,
     category: "Resources",
   },
   {
-    name: "School Email",
+    name: "Gmail",
     url: "https://mail.google.com/a/stmarksschool.org",
-    icon: <Mail className="h-5 w-5" />,
-    color: "bg-sky-50 text-sky-600",
+    icon: <Mail className="h-4 w-4" />,
     category: "Resources",
   },
   {
-    name: "Athletics Livestream",
+    name: "Athletics",
     url: "https://www.stmarksschool.org/athletics",
-    icon: <Tv className="h-5 w-5" />,
-    color: "bg-sm-navy/5 text-sm-navy",
+    icon: <Tv className="h-4 w-4" />,
     category: "Resources",
   },
   {
-    name: "Student Handbook",
-    url: "https://www.stmarksschool.org/community/student-life/student-handbook",
-    icon: <FileText className="h-5 w-5" />,
-    color: "bg-gray-100 text-gray-600",
+    name: "SmugMug Photos",
+    url: "https://stmarkslions.smugmug.com/",
+    icon: <Printer className="h-4 w-4" />,
     category: "Resources",
   },
 
   // Tools
   {
-    name: "Print (PaperCut)",
-    url: "https://print.stmarksschool.org",
-    icon: <Printer className="h-5 w-5" />,
-    color: "bg-teal-50 text-teal-600",
-    category: "Tools",
-  },
-  {
-    name: "WiFi Help",
-    url: "https://helpdesk.stmarksschool.org",
-    icon: <Wifi className="h-5 w-5" />,
-    color: "bg-cyan-50 text-cyan-600",
-    category: "Tools",
-  },
-  {
     name: "Essential Dates",
     url: "https://www.stmarksschool.org/about/calendar",
-    icon: <CalendarDays className="h-5 w-5" />,
-    color: "bg-sm-gold/10 text-sm-gold",
+    icon: <CalendarDays className="h-4 w-4" />,
     category: "Tools",
   },
   {
     name: "Parent Portal",
     url: "https://www.stmarksschool.org/parents",
-    icon: <Users className="h-5 w-5" />,
-    color: "bg-emerald-50 text-emerald-600",
+    icon: <Users className="h-4 w-4" />,
     category: "Tools",
   },
   {
-    name: "IT Help Desk",
-    url: "https://helpdesk.stmarksschool.org",
-    icon: <Shield className="h-5 w-5" />,
-    color: "bg-slate-100 text-slate-600",
+    name: "Offices & Depts",
+    url: "https://www.stmarksschool.org/about/offices-and-departments",
+    icon: <Shield className="h-4 w-4" />,
+    category: "Tools",
+  },
+  {
+    name: "Health Services",
+    url: "https://www.stmarksschool.org/community/student-life/student-handbook",
+    icon: <Heart className="h-4 w-4" />,
     category: "Tools",
   },
 ];
@@ -162,54 +137,58 @@ const categories = ["Academic", "Campus", "Resources", "Tools"];
 
 export default function QuickLinks() {
   return (
-    <div className="widget-card p-5 col-span-full" id="links">
-      <div className="flex items-center justify-between mb-5">
+    <div className="widget-card p-6" id="links">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <ExternalLink className="h-4 w-4 text-sm-gold" />
-          <h3 className="text-xs font-semibold text-sm-text-light uppercase tracking-wider">
-            Quick Links
-          </h3>
+          <span className="divider-gold" />
+          <span className="label-micro">Quick Links Index</span>
         </div>
         <a
           href="https://www.stmarksschool.org"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs text-sm-navy hover:text-sm-navy-light transition-colors"
+          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
         >
-          School Website <ExternalLink className="h-3 w-3" />
+          School Website
+          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </a>
       </div>
 
-      {categories.map((cat) => {
-        const catLinks = links.filter((l) => l.category === cat);
-        return (
-          <div key={cat} className="mb-4 last:mb-0">
-            <h4 className="text-xs font-semibold text-sm-text-muted uppercase tracking-wider mb-2">
-              {cat}
-            </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-              {catLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 rounded-xl bg-sm-cream/50 px-3 py-2.5 transition-all hover:bg-sm-cream hover:shadow-sm group"
-                >
-                  <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg ${link.color} flex-shrink-0`}
-                  >
-                    {link.icon}
-                  </div>
-                  <span className="text-xs font-medium text-sm-text group-hover:text-sm-navy truncate">
-                    {link.name}
-                  </span>
-                </a>
-              ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+        {categories.map((cat) => {
+          const catLinks = links.filter((l) => l.category === cat);
+          return (
+            <div key={cat}>
+              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-sm-border/60">
+                <span className="text-[9px] font-bold text-sm-gold">●</span>
+                <h4 className="text-[10px] font-bold text-sm-navy uppercase tracking-[0.2em]">
+                  {cat}
+                </h4>
+              </div>
+              <ul className="space-y-1">
+                {catLinks.map((link) => (
+                  <li key={link.name}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-3 py-1.5 text-sm-text hover:text-sm-navy transition-colors"
+                    >
+                      <span className="text-sm-text-muted group-hover:text-sm-navy transition-colors">
+                        {link.icon}
+                      </span>
+                      <span className="text-[12px] font-medium flex-1 truncate">
+                        {link.name}
+                      </span>
+                      <ArrowUpRight className="h-3 w-3 text-sm-text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all flex-shrink-0" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
