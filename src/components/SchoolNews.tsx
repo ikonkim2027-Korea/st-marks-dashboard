@@ -3,107 +3,80 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import type { NewsItem } from "@/types";
 
-const socials = [
-  {
-    platform: "Instagram",
-    url: "https://www.instagram.com/smlions/",
-    iconPath: "/icons/brands/instagram.svg",
-  },
-  {
-    platform: "Facebook",
-    url: "https://www.facebook.com/smlionsMA/",
-    iconPath: "/icons/brands/facebook.svg",
-  },
-  {
-    platform: "X",
-    url: "https://x.com/SMLions",
-    iconPath: "/icons/brands/x.svg",
-  },
-  {
-    platform: "YouTube",
-    url: "https://www.youtube.com/@SMLions",
-    iconPath: "/icons/brands/youtube.svg",
-  },
-  {
-    platform: "LinkedIn",
-    url: "https://www.linkedin.com/school/smlions/",
-    iconPath: "/icons/brands/linkedin.svg",
-  },
-  {
-    platform: "SmugMug",
-    url: "https://stmarkslions.smugmug.com/",
-    iconPath: "/icons/brands/smugmug.svg",
-  },
-];
-
-function getMockNews(): NewsItem[] {
-  return [
-    {
-      id: "1",
-      title: "Inside the Pride: Weekly Newsletter",
-      summary:
-        "News and updates for current students and families including Spirit Week details and Groton Day preparations.",
-      date: "Apr 9, 2026",
-      category: "Newsletter",
-      imageUrl: "/photos/campus-flower.jpg",
-      link: "https://www.stmarksschool.org",
-    },
-    {
-      id: "2",
-      title: "Spring Travel Programs Announced",
-      summary:
-        "Global Learning in Action — Spring 2026 travel program destinations revealed.",
-      date: "Apr 7, 2026",
-      category: "Academics",
-      link: "https://www.stmarksschool.org",
-    },
-    {
-      id: "3",
-      title: "Cutler Jazz Festival This Weekend",
-      summary:
-        "Annual jazz celebration featuring student performers and guest musicians at PFAC.",
-      date: "Apr 5, 2026",
-      category: "Arts",
-      link: "https://www.stmarksschool.org",
-    },
-    {
-      id: "4",
-      title: "Lions Win ISL Championship",
-      summary: "Boys varsity squash takes home the title.",
-      date: "Apr 2, 2026",
-      category: "Athletics",
-      link: "https://www.stmarksschool.org",
-    },
-  ];
+interface ApiNewsItem {
+  id: string;
+  title: string;
+  link: string;
+  date: string; // ISO
+  imageUrl: string | null;
 }
 
-function formatDate(date: string): string {
-  const d = new Date(date);
+function formatDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
   const day = d.getDate();
-  const month = d
-    .toLocaleString("en-US", { month: "short" })
-    .toUpperCase();
+  const month = d.toLocaleString("en-US", { month: "short" }).toUpperCase();
   const year = d.getFullYear().toString().slice(-2);
   return `${day} ${month} ${year}`;
 }
 
 export default function SchoolNews() {
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [news, setNews] = useState<ApiNewsItem[] | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    setNews(getMockNews());
+    async function load() {
+      try {
+        const res = await fetch("/api/news");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = (await res.json()) as { items: ApiNewsItem[] };
+        setNews(data.items || []);
+      } catch {
+        setError(true);
+      }
+    }
+    load();
   }, []);
 
-  if (news.length === 0) {
+  if (error) {
     return (
-      <div className="widget-card p-6 h-full">
+      <div className="widget-card p-6 h-full flex flex-col">
         <div className="flex items-center gap-2 mb-5">
           <span className="divider-gold" />
           <span className="label-micro">School News</span>
         </div>
-        <div className="h-32 animate-pulse rounded bg-sm-cream" />
+        <p className="text-xs text-sm-text-muted">Unable to load news.</p>
+      </div>
+    );
+  }
+
+  if (news === null) {
+    return (
+      <div className="widget-card p-6 h-full flex flex-col">
+        <div className="flex items-center gap-2 mb-5">
+          <span className="divider-gold" />
+          <span className="label-micro">School News</span>
+        </div>
+        <div className="aspect-[16/9] w-full animate-pulse rounded bg-sm-cream mb-4" />
+        <div className="space-y-3">
+          <div className="h-3 w-3/4 animate-pulse rounded bg-sm-cream" />
+          <div className="h-3 w-2/3 animate-pulse rounded bg-sm-cream" />
+          <div className="h-3 w-4/5 animate-pulse rounded bg-sm-cream" />
+        </div>
+      </div>
+    );
+  }
+
+  if (news.length === 0) {
+    return (
+      <div className="widget-card p-6 h-full flex flex-col">
+        <div className="flex items-center gap-2 mb-5">
+          <span className="divider-gold" />
+          <span className="label-micro">School News</span>
+        </div>
+        <p className="text-xs text-sm-text-muted">No news available.</p>
       </div>
     );
   }
@@ -118,7 +91,7 @@ export default function SchoolNews() {
           <span className="label-micro">School News</span>
         </div>
         <a
-          href="https://www.stmarksschool.org/about/news"
+          href="https://www.stmarksschool.org/news"
           target="_blank"
           rel="noopener noreferrer"
           className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
@@ -141,13 +114,14 @@ export default function SchoolNews() {
               src={featured.imageUrl}
               alt={featured.title}
               fill
+              unoptimized
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 1024px) 100vw, 33vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-sm-navy/40 via-transparent to-transparent" />
             <div className="absolute bottom-2 left-2">
               <span className="inline-block px-2 py-0.5 bg-white/95 text-[9px] font-bold uppercase tracking-[0.15em] text-sm-navy">
-                {featured.category}
+                Featured
               </span>
             </div>
           </div>
@@ -160,8 +134,8 @@ export default function SchoolNews() {
         </h4>
       </a>
 
-      {/* Rest */}
-      <div className="mt-5 pt-4 border-t border-sm-border/60 space-y-3 flex-1">
+      {/* Rest — fills remaining vertical space */}
+      <div className="mt-5 pt-4 border-t border-sm-border/60 space-y-2.5 flex-1 overflow-hidden">
         {rest.map((item) => (
           <a
             key={item.id}
@@ -172,39 +146,12 @@ export default function SchoolNews() {
           >
             <p className="text-[9px] text-sm-text-muted tracking-[0.12em] tabular mb-0.5">
               {formatDate(item.date)}
-              <span className="mx-1.5 text-sm-border">·</span>
-              <span className="uppercase">{item.category}</span>
             </p>
-            <h4 className="text-xs font-semibold text-sm-text leading-snug group-hover:text-sm-navy transition-colors">
+            <h4 className="text-xs font-semibold text-sm-text leading-snug group-hover:text-sm-navy transition-colors line-clamp-2">
               {item.title}
             </h4>
           </a>
         ))}
-      </div>
-
-      {/* Social footer */}
-      <div className="mt-5 pt-4 border-t border-sm-border/60">
-        <p className="label-micro mb-2.5">Follow SM Lions</p>
-        <div className="flex items-center gap-1">
-          {socials.map((social) => (
-            <a
-              key={social.platform}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={social.platform}
-              className="group flex items-center justify-center w-8 h-8 rounded border border-sm-border/60 hover:border-sm-navy hover:bg-sm-navy transition-all"
-            >
-              <Image
-                src={social.iconPath}
-                alt={social.platform}
-                width={14}
-                height={14}
-                className="opacity-55 transition-all group-hover:opacity-100 group-hover:brightness-0 group-hover:invert"
-              />
-            </a>
-          ))}
-        </div>
       </div>
     </div>
   );

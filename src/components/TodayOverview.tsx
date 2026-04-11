@@ -2,17 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import HeroWeather from "./HeroWeather";
 
 function getGreeting(hour: number): string {
   if (hour < 12) return "Good Morning";
   if (hour < 17) return "Good Afternoon";
   return "Good Evening";
-}
-
-function getDayType(date: Date): string {
-  const day = date.getDay();
-  if (day === 0 || day === 6) return "Weekend";
-  return "School Day";
 }
 
 const weekdayFull: Record<number, string> = {
@@ -56,7 +51,6 @@ export default function TodayOverview() {
       minute: "2-digit",
     })
     .toUpperCase();
-  const dayType = getDayType(now);
   const greeting = getGreeting(now.getHours());
 
   return (
@@ -91,34 +85,9 @@ export default function TodayOverview() {
         </div>
       </div>
 
-      {/* Right — Navy block with school info */}
-      <div className="relative col-span-12 md:col-span-4 bg-sm-navy p-6 flex flex-col justify-between">
-        <div>
-          <span className="label-micro text-sm-gold/90">
-            St. Mark&apos;s School
-          </span>
-          <p className="mt-2 text-[11px] text-white/55 leading-relaxed tracking-wide">
-            Southborough, Massachusetts
-            <br />
-            Founded 1865 · Episcopal
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="divider-gold" />
-          <div className="flex items-baseline justify-between">
-            <span className="label-micro text-white/60">Today</span>
-            <span className="text-[11px] font-bold tracking-[0.15em] text-white uppercase">
-              {dayType}
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="label-micro text-white/60">Motto</span>
-            <span className="text-[11px] font-medium italic text-white/85">
-              Age Quod Agis
-            </span>
-          </div>
-        </div>
+      {/* Right — Weather on navy */}
+      <div className="col-span-12 md:col-span-4">
+        <HeroWeather />
       </div>
     </section>
   );

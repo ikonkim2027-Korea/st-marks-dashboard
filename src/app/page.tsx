@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Header from "@/components/Header";
 import TodayOverview from "@/components/TodayOverview";
-import WeatherWidget from "@/components/WeatherWidget";
 import CanvasAssignments from "@/components/CanvasAssignments";
 import LunchMenu from "@/components/LunchMenu";
 import Athletics from "@/components/Athletics";
 import SchoolNews from "@/components/SchoolNews";
 import CalendarWidget from "@/components/CalendarWidget";
+import InstagramPanel from "@/components/InstagramPanel";
+import BlankPanel from "@/components/BlankPanel";
 import QuickLinks from "@/components/QuickLinks";
 
 export default function Home() {
@@ -22,28 +23,31 @@ export default function Home() {
             <TodayOverview />
           </div>
 
-          {/* Row 2 — Canvas (5) + Weather (3) + News (4) */}
+          {/* Row 2 — Canvas (5) + Lunch (3) + News (4, row-span-2) */}
           <div className="col-span-12 md:col-span-6 lg:col-span-5">
             <CanvasAssignments />
           </div>
           <div className="col-span-12 md:col-span-6 lg:col-span-3">
-            <WeatherWidget />
+            <LunchMenu />
           </div>
           <div className="col-span-12 md:col-span-12 lg:col-span-4 lg:row-span-2">
             <SchoolNews />
           </div>
 
-          {/* Row 3 — Athletics (5) + Lunch (3) */}
+          {/* Row 3 — Athletics (5) + Blank (3) */}
           <div className="col-span-12 md:col-span-6 lg:col-span-5">
             <Athletics />
           </div>
           <div className="col-span-12 md:col-span-6 lg:col-span-3">
-            <LunchMenu />
+            <BlankPanel />
           </div>
 
-          {/* Row 4 — Calendar full width */}
-          <div className="col-span-12">
+          {/* Row 4 — Calendar (6) + Placeholder (6) */}
+          <div className="col-span-12 md:col-span-6">
             <CalendarWidget />
+          </div>
+          <div className="col-span-12 md:col-span-6">
+            <InstagramPanel />
           </div>
 
           {/* Row 5 — Quick Links full width */}

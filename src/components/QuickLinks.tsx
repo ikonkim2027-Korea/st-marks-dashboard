@@ -57,7 +57,7 @@ const links: LinkItem[] = [
   // Campus
   {
     name: "Orah (Sign Out)",
-    url: "https://www.stmarksschool.org/campus-life/residential-life/boardingware",
+    url: "https://www.stmarksschool.org/community/residential-life/orah",
     icon: <MapPin className="h-4 w-4" />,
     category: "Campus",
   },
@@ -127,7 +127,7 @@ const links: LinkItem[] = [
   },
   {
     name: "Health Services",
-    url: "https://www.stmarksschool.org/community/student-life/student-handbook",
+    url: "https://www.stmarksschool.org/community/health-services-and-wellness/health-and-counseling-services",
     icon: <Heart className="h-4 w-4" />,
     category: "Tools",
   },
