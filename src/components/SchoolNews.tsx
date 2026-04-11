@@ -5,6 +5,39 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import type { NewsItem } from "@/types";
 
+const socials = [
+  {
+    platform: "Instagram",
+    url: "https://www.instagram.com/smlions/",
+    iconPath: "/icons/brands/instagram.svg",
+  },
+  {
+    platform: "Facebook",
+    url: "https://www.facebook.com/smlionsMA/",
+    iconPath: "/icons/brands/facebook.svg",
+  },
+  {
+    platform: "X",
+    url: "https://x.com/SMLions",
+    iconPath: "/icons/brands/x.svg",
+  },
+  {
+    platform: "YouTube",
+    url: "https://www.youtube.com/@SMLions",
+    iconPath: "/icons/brands/youtube.svg",
+  },
+  {
+    platform: "LinkedIn",
+    url: "https://www.linkedin.com/school/smlions/",
+    iconPath: "/icons/brands/linkedin.svg",
+  },
+  {
+    platform: "SmugMug",
+    url: "https://stmarkslions.smugmug.com/",
+    iconPath: "/icons/brands/smugmug.svg",
+  },
+];
+
 function getMockNews(): NewsItem[] {
   return [
     {
@@ -147,6 +180,31 @@ export default function SchoolNews() {
             </h4>
           </a>
         ))}
+      </div>
+
+      {/* Social footer */}
+      <div className="mt-5 pt-4 border-t border-sm-border/60">
+        <p className="label-micro mb-2.5">Follow SM Lions</p>
+        <div className="flex items-center gap-1">
+          {socials.map((social) => (
+            <a
+              key={social.platform}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={social.platform}
+              className="group flex items-center justify-center w-8 h-8 rounded border border-sm-border/60 hover:border-sm-navy hover:bg-sm-navy transition-all"
+            >
+              <Image
+                src={social.iconPath}
+                alt={social.platform}
+                width={14}
+                height={14}
+                className="opacity-55 transition-all group-hover:opacity-100 group-hover:brightness-0 group-hover:invert"
+              />
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,6 @@ import Athletics from "@/components/Athletics";
 import SchoolNews from "@/components/SchoolNews";
 import CalendarWidget from "@/components/CalendarWidget";
 import QuickLinks from "@/components/QuickLinks";
-import SocialHub from "@/components/SocialHub";
 
 export default function Home() {
   return (
@@ -42,12 +41,9 @@ export default function Home() {
             <LunchMenu />
           </div>
 
-          {/* Row 4 — Calendar (8) + Social (4) */}
-          <div className="col-span-12 md:col-span-12 lg:col-span-8">
+          {/* Row 4 — Calendar full width */}
+          <div className="col-span-12">
             <CalendarWidget />
-          </div>
-          <div className="col-span-12 md:col-span-12 lg:col-span-4">
-            <SocialHub />
           </div>
 
           {/* Row 5 — Quick Links full width */}
