@@ -133,10 +133,10 @@ export function CanvasWidget() {
     <button
       onClick={() => setShowSetup(true)}
       onMouseDown={(e) => e.stopPropagation()}
-      className="text-sm-text-muted hover:text-sm-text transition-colors"
-      aria-label="Canvas settings"
+      className="focus-ring inline-flex min-h-[28px] min-w-[28px] items-center justify-center rounded text-sm-text-muted hover:text-sm-text transition-colors"
+      aria-label="Canvas settings — update API token or domain"
     >
-      <Settings className="h-3.5 w-3.5" />
+      <Settings className="h-3.5 w-3.5" aria-hidden="true" />
     </button>
   ) : null;
 
@@ -150,31 +150,32 @@ export function CanvasWidget() {
         title={titleLabel}
         eyebrow={eyebrowLabel}
         accent="orange"
+        scrollable={false}
       >
         <div className="flex h-full flex-col">
           <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
-            <p className="display-number text-[44px] text-sm-navy/20 mb-3">00</p>
-            <p className="text-sm font-bold text-sm-text mb-1">Not Connected</p>
-            <p className="text-[11px] text-sm-text-muted max-w-[260px] mb-5 leading-relaxed">
+            <p className="display-number text-[44px] text-sm-navy/20 mb-3 tabular-nums" aria-hidden="true">00</p>
+            <p className="text-sm font-bold text-sm-text mb-1">Not connected</p>
+            <p className="text-[11px] text-sm-text-light max-w-[260px] mb-5 leading-relaxed">
               View upcoming assignments from Canvas.
               <br />
               Requires an API token from the school.
             </p>
             <button
               onClick={() => setShowSetup(true)}
-              className="text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light border-b border-sm-navy pb-0.5 transition-colors"
+              className="focus-ring min-h-[40px] text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light border-b border-sm-navy pb-0.5 px-2 transition-colors"
             >
               Enter API Token →
             </button>
           </div>
 
           <div className="flex items-start gap-2 pt-4 border-t border-sm-border/60">
-            <Info className="h-3 w-3 text-sm-gold mt-0.5 flex-shrink-0" />
-            <p className="text-[9px] text-sm-text-muted leading-relaxed">
+            <Info className="h-3 w-3 text-sm-gold mt-0.5 flex-shrink-0" aria-hidden="true" />
+            <p className="text-[9px] text-sm-text-light leading-relaxed">
               Student token generation is disabled. Contact{" "}
               <a
                 href="mailto:ikonkim@stmarksschool.org"
-                className="underline underline-offset-2 hover:text-sm-navy"
+                className="focus-ring rounded-sm underline underline-offset-2 hover:text-sm-navy"
               >
                 ikonkim@stmarksschool.org
               </a>
@@ -188,6 +189,8 @@ export function CanvasWidget() {
 
   // Setup form
   if (showSetup) {
+    const domainInputId = "canvas-domain-input";
+    const tokenInputId = "canvas-token-input";
     return (
       <WidgetShell
         title={titleLabel}
@@ -197,49 +200,53 @@ export function CanvasWidget() {
           <button
             onClick={() => setShowSetup(false)}
             onMouseDown={(e) => e.stopPropagation()}
-            className="text-sm-text-muted hover:text-sm-text transition-colors"
-            aria-label="Close setup"
+            className="focus-ring inline-flex min-h-[28px] min-w-[28px] items-center justify-center rounded text-sm-text-muted hover:text-sm-text transition-colors"
+            aria-label="Close Canvas setup"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
           </button>
         }
       >
         <div className="space-y-4">
           <div>
-            <label className="label-micro block mb-1.5">Canvas Domain</label>
+            <label htmlFor={domainInputId} className="label-micro block mb-1.5">Canvas Domain</label>
             <input
+              id={domainInputId}
               type="text"
               value={domainInput}
               onChange={(e) => setDomainInput(e.target.value)}
               placeholder="stmarks.instructure.com"
-              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
+              className="focus-ring w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
             />
           </div>
           <div>
-            <label className="label-micro block mb-1.5">API Token</label>
+            <label htmlFor={tokenInputId} className="label-micro block mb-1.5">API Token</label>
             <input
+              id={tokenInputId}
               type="password"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
               placeholder="Paste token from IT"
-              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
+              className="focus-ring w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
+              autoComplete="off"
             />
             <p className="text-[9px] text-sm-text-muted mt-1.5">
-              Stored locally in browser only
+              Stored locally in your browser only
             </p>
           </div>
           <div className="flex gap-2 pt-2">
             <button
               onClick={saveConfig}
               disabled={!tokenInput.trim()}
-              className="min-h-[40px] flex-1 bg-sm-navy px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-sm-navy-light transition-colors disabled:opacity-40"
+              className="focus-ring min-h-[40px] flex-1 rounded-sm bg-sm-navy px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-sm-navy-light transition-colors disabled:cursor-not-allowed disabled:opacity-40"
             >
               Connect
             </button>
             {config && (
               <button
                 onClick={clearConfig}
-                className="min-h-[40px] border border-sm-danger/40 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-danger hover:bg-sm-danger/5 transition-colors"
+                className="focus-ring min-h-[40px] rounded-sm border border-sm-danger/40 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-danger hover:bg-sm-danger/5 transition-colors"
+                aria-label="Disconnect Canvas and remove stored token"
               >
                 Disconnect
               </button>
@@ -262,78 +269,96 @@ export function CanvasWidget() {
       headerExtra={headerExtra}
     >
       {loading ? (
-        <div className="space-y-2 flex-1">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-12 animate-pulse rounded bg-sm-cream" />
+        <div className="space-y-2 flex-1" role="status" aria-label="Loading assignments">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center justify-between gap-3 py-3 border-b border-sm-border/60 last:border-0">
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="h-3 w-3/4 animate-pulse rounded bg-sm-cream" />
+                <div className="h-2 w-1/2 animate-pulse rounded bg-sm-cream" />
+              </div>
+              <div className="h-3 w-14 animate-pulse rounded bg-sm-cream" />
+            </div>
           ))}
+          <span className="sr-only">Loading assignments…</span>
         </div>
       ) : error ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
-          <AlertCircle className="h-5 w-5 text-sm-danger mb-2" />
-          <p className="text-xs text-sm-danger">{error}</p>
+        <div
+          className="flex-1 flex flex-col items-center justify-center text-center h-full px-4"
+          role="alert"
+        >
+          <AlertCircle className="h-5 w-5 text-sm-danger mb-2" aria-hidden="true" />
+          <p className="text-xs font-semibold text-sm-text mb-1">Couldn’t load assignments</p>
+          <p className="text-[11px] text-sm-text-muted leading-relaxed max-w-[240px]">
+            {error}
+          </p>
           <button
             onClick={() => config && fetchAssignments(config)}
-            className="mt-3 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:underline"
+            className="focus-ring mt-3 min-h-[40px] rounded-sm px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:underline"
           >
-            Retry
+            Try again
           </button>
         </div>
       ) : pending.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
-          <CheckCircle2 className="h-8 w-8 text-sm-success mb-3" />
+          <CheckCircle2 className="h-8 w-8 text-sm-success mb-3" aria-hidden="true" />
           <p className="display-number text-2xl text-sm-text mb-1">
-            ALL CAUGHT UP
+            All caught up
           </p>
           <p className="text-[11px] text-sm-text-muted">
             No upcoming assignments due
           </p>
         </div>
       ) : (
-        <div className="flex-1 space-y-0">
+        <ul className="flex-1 space-y-0" aria-label={`${pending.length} upcoming assignments`}>
           {pending.slice(0, 6).map((a) => {
             const timeLeft = a.due_at
               ? getTimeLeft(a.due_at)
               : { label: "NO DATE", urgent: false };
             return (
-              <a
-                key={a.id}
-                href={a.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex items-center justify-between gap-3 py-3 border-b border-sm-border/60 last:border-0 group ${
-                  timeLeft.urgent
-                    ? "border-l-2 border-l-sm-gold pl-3 -ml-3"
-                    : ""
-                }`}
-              >
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-xs font-bold text-sm-text truncate group-hover:text-sm-navy transition-colors">
-                    {a.name}
-                  </h4>
-                  <p className="label-micro mt-1 truncate">
-                    {a.course_name}
-                    {a.due_at && (
-                      <span className="text-sm-text-muted normal-case tracking-normal">
-                        <span className="mx-1.5">·</span>
-                        <span className="tabular">{formatDueDate(a.due_at)}</span>
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span
-                    className={`text-[10px] font-bold tracking-[0.1em] tabular ${
-                      timeLeft.urgent ? "text-sm-danger" : "text-sm-navy"
-                    }`}
-                  >
-                    {timeLeft.label}
-                  </span>
-                  <ArrowUpRight className="h-3 w-3 text-sm-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </a>
+              <li key={a.id}>
+                <a
+                  href={a.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`focus-ring flex items-center justify-between gap-3 py-3 border-b border-sm-border/60 last:border-0 group rounded-sm ${
+                    timeLeft.urgent
+                      ? "border-l-2 border-l-sm-gold pl-3 -ml-3"
+                      : ""
+                  }`}
+                  aria-label={`${a.name} — ${a.course_name}${a.due_at ? `, due ${formatDueDate(a.due_at)}, ${timeLeft.label.toLowerCase()}` : ""}`}
+                >
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-xs font-bold text-sm-text truncate group-hover:text-sm-navy transition-colors leading-snug">
+                      {a.name}
+                    </h4>
+                    <p className="label-micro mt-1 truncate">
+                      {a.course_name}
+                      {a.due_at && (
+                        <span className="text-sm-text-muted normal-case tracking-normal">
+                          <span className="mx-1.5" aria-hidden="true">·</span>
+                          <span className="tabular">{formatDueDate(a.due_at)}</span>
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className={`text-[10px] font-bold tracking-[0.1em] tabular ${
+                        timeLeft.urgent ? "text-sm-danger" : "text-sm-navy"
+                      }`}
+                    >
+                      {timeLeft.label}
+                    </span>
+                    <ArrowUpRight
+                      className="h-3 w-3 text-sm-text-muted opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </a>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
     </WidgetShell>
   );

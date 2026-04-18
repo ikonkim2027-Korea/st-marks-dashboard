@@ -77,56 +77,63 @@ export function InstagramWidget() {
       accent="orange"
       href="https://www.instagram.com/smlions/"
       hrefLabel="Follow"
+      scrollable={false}
     >
       <div className="flex h-full flex-col">
         {/* Post grid — stretches to fill available height */}
-        <div className="grid grid-cols-3 grid-rows-2 gap-1 flex-1 min-h-0">
+        <ul className="grid grid-cols-3 grid-rows-2 gap-1 flex-1 min-h-0" aria-label="Recent Instagram posts">
           {posts.map((post) => (
-            <a
-              key={post.id}
-              href="https://www.instagram.com/smlions/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title={post.caption}
-              className="relative overflow-hidden group block rounded-[2px]"
-              onMouseDown={(e) => e.stopPropagation()}
-            >
-              <Image
-                src={post.img}
-                alt={post.caption}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 1024px) 33vw, 16vw"
-              />
-              <div className="absolute inset-0 bg-sm-navy/0 group-hover:bg-sm-navy/30 transition-colors" />
-            </a>
+            <li key={post.id} className="relative overflow-hidden rounded-[2px]">
+              <a
+                href="https://www.instagram.com/smlions/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Instagram: ${post.caption}`}
+                className="focus-ring block h-full w-full group"
+                onMouseDown={(e) => e.stopPropagation()}
+              >
+                <Image
+                  src={post.img}
+                  alt=""
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 33vw, 16vw"
+                />
+                <div
+                  className="absolute inset-0 bg-sm-navy/0 group-hover:bg-sm-navy/30 transition-colors"
+                  aria-hidden="true"
+                />
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Social footer */}
         <div className="mt-3 pt-3 border-t border-sm-border/60">
           <p className="label-micro mb-2">Follow SM Lions</p>
-          <div className="flex items-center gap-1">
+          <ul className="flex items-center gap-1.5" aria-label="St. Mark's social channels">
             {socials.map((social) => (
-              <a
-                key={social.platform}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={social.platform}
-                className="group flex items-center justify-center w-7 h-7 rounded border border-sm-border/60 hover:border-sm-navy hover:bg-sm-navy transition-all"
-                onMouseDown={(e) => e.stopPropagation()}
-              >
-                <Image
-                  src={social.iconPath}
-                  alt={social.platform}
-                  width={12}
-                  height={12}
-                  className="opacity-55 transition-all group-hover:opacity-100 group-hover:brightness-0 group-hover:invert"
-                />
-              </a>
+              <li key={social.platform}>
+                <a
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${social.platform} — SM Lions`}
+                  className="focus-ring group flex items-center justify-center min-h-[40px] min-w-[40px] sm:min-h-0 sm:min-w-0 sm:w-7 sm:h-7 rounded border border-sm-border/60 hover:border-sm-navy hover:bg-sm-navy transition-all"
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  <Image
+                    src={social.iconPath}
+                    alt=""
+                    width={12}
+                    height={12}
+                    aria-hidden="true"
+                    className="opacity-55 transition-all group-hover:opacity-100 group-hover:brightness-0 group-hover:invert"
+                  />
+                </a>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
     </WidgetShell>

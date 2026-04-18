@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CalendarDays } from "lucide-react";
 import type { CalendarEvent } from "@/types";
 import { WidgetShell } from "./widget-shell";
 
@@ -66,53 +67,67 @@ export function CalendarWidget() {
       accent="gold"
       href="https://www.stmarksschool.org/about/calendar"
       hrefLabel="Full Calendar"
+      scrollable={false}
     >
-      <div className="space-y-0 flex-1">
-        {events.map((event, idx) => {
-          const { day, month } = parseDatePart(event.date);
-          const isFirst = idx === 0;
-          return (
-            <div
-              key={event.id}
-              className={`flex items-center gap-4 py-3 border-b border-sm-border/60 last:border-0 ${
-                isFirst ? "border-l-2 border-l-sm-gold pl-3 -ml-3" : ""
-              }`}
-            >
-              {/* Date column */}
-              <div className="flex-shrink-0 w-12 text-center">
-                <p className="display-number text-2xl text-sm-navy">{day}</p>
-                <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-sm-text-muted mt-0.5">
-                  {month}
-                </p>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0 border-l border-sm-border pl-4">
-                <h4 className="text-xs font-bold text-sm-text leading-snug">
-                  {event.title}
-                </h4>
-                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-sm-text-muted">
-                  <span className="uppercase tracking-wider">
-                    {event.category}
-                  </span>
-                  {event.time && (
-                    <>
-                      <span className="text-sm-border">·</span>
-                      <span className="tabular">{event.time}</span>
-                    </>
-                  )}
-                  {event.location && (
-                    <>
-                      <span className="text-sm-border">·</span>
-                      <span className="truncate">{event.location}</span>
-                    </>
-                  )}
+      {events.length === 0 ? (
+        <div className="flex h-full flex-col items-center justify-center text-center">
+          <CalendarDays className="h-7 w-7 text-sm-text-muted/60 mb-2" aria-hidden="true" />
+          <p className="text-sm font-semibold text-sm-text">Nothing on the calendar</p>
+          <p className="text-[11px] text-sm-text-muted mt-1">Check back soon for upcoming events.</p>
+        </div>
+      ) : (
+        <ul className="space-y-0 flex-1" aria-label="Upcoming calendar events">
+          {events.map((event, idx) => {
+            const { day, month } = parseDatePart(event.date);
+            const isFirst = idx === 0;
+            return (
+              <li
+                key={event.id}
+                className={`flex items-center gap-4 py-3 border-b border-sm-border/60 last:border-0 ${
+                  isFirst ? "border-l-2 border-l-sm-gold pl-3 -ml-3" : ""
+                }`}
+              >
+                {/* Date column */}
+                <div className="flex-shrink-0 w-12 text-center">
+                  <p
+                    className="display-number text-2xl text-sm-navy tabular-nums"
+                    aria-label={`${month} ${day}`}
+                  >
+                    {day}
+                  </p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-sm-text-muted mt-0.5">
+                    {month}
+                  </p>
                 </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0 border-l border-sm-border/60 pl-4">
+                  <h4 className="text-xs font-bold text-sm-text leading-snug">
+                    {event.title}
+                  </h4>
+                  <div className="flex items-center gap-2 mt-0.5 text-[10px] text-sm-text-muted leading-snug flex-wrap">
+                    <span className="uppercase tracking-wider">
+                      {event.category}
+                    </span>
+                    {event.time && (
+                      <>
+                        <span className="text-sm-border" aria-hidden="true">·</span>
+                        <span className="tabular">{event.time}</span>
+                      </>
+                    )}
+                    {event.location && (
+                      <>
+                        <span className="text-sm-border" aria-hidden="true">·</span>
+                        <span className="truncate">{event.location}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </WidgetShell>
   );
 }

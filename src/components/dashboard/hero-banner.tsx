@@ -134,9 +134,17 @@ export function HeroBanner() {
 
   if (!now) {
     return (
-      <section className="mx-auto w-full max-w-full px-4 pt-4 sm:px-6 sm:pt-5 xl:px-10">
-        <div className="relative h-[200px] overflow-hidden rounded-[10px] bg-sm-navy sm:h-[220px]">
+      <section
+        className="mx-auto w-full max-w-full px-4 pt-4 sm:px-6 sm:pt-5 xl:px-10"
+        aria-label="Today"
+      >
+        <div
+          className="relative h-[200px] overflow-hidden rounded-[10px] bg-sm-navy sm:h-[220px]"
+          role="status"
+          aria-label="Loading today’s banner"
+        >
           <div className="absolute inset-0 animate-pulse bg-white/5" />
+          <span className="sr-only">Loading today’s banner…</span>
         </div>
       </section>
     );
@@ -159,7 +167,10 @@ export function HeroBanner() {
   const greeting = getGreeting(now.getHours());
 
   return (
-    <section className="mx-auto w-full max-w-full px-4 pt-4 sm:px-6 sm:pt-5 xl:px-10">
+    <section
+      className="mx-auto w-full max-w-full px-4 pt-4 sm:px-6 sm:pt-5 xl:px-10"
+      aria-label="Today"
+    >
       <div className="relative h-[200px] overflow-hidden rounded-[10px] border border-sm-navy/10 sm:h-[220px]">
         <Image
           src="/photos/campus-aerial-dusk.jpg"
@@ -198,8 +209,8 @@ export function HeroBanner() {
                     <button
                       type="button"
                       onClick={toggleUnit}
-                      aria-label={`Switch to °${unit === "F" ? "C" : "F"}`}
-                      className="rounded px-1 text-[10px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                      aria-label={`Temperature ${Math.round(toUnit(weather.temp))} degrees ${unit}. Switch to degrees ${unit === "F" ? "C" : "F"}.`}
+                      className="focus-ring-invert rounded px-1 text-[10px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                     >
                       {unit}
                     </button>
@@ -209,6 +220,7 @@ export function HeroBanner() {
                   <span className="inline-flex items-center gap-1.5">
                     <Leaf
                       className="h-3.5 w-3.5"
+                      aria-hidden="true"
                       style={{ color: aqBand.hex }}
                     />
                     <span className="font-semibold text-white">
@@ -229,35 +241,41 @@ export function HeroBanner() {
           {/* Right: weather + AQ panel */}
           <aside className="hidden w-[280px] shrink-0 flex-col justify-between gap-2 md:flex">
             {/* Weather */}
-            <div className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+            <div
+              className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
+              aria-label="Weather"
+              role="region"
+            >
               {weatherError ? (
-                <p className="text-[11px] text-white/60">
-                  Weather unavailable
+                <p className="text-[11px] text-white/70" role="status">
+                  Couldn’t load weather — try refreshing.
                 </p>
               ) : !weather ? (
-                <div className="space-y-2">
-                  <div className="h-8 w-20 animate-pulse rounded bg-white/10" />
+                <div className="space-y-2" aria-label="Loading weather" role="status">
+                  <div className="h-9 w-24 animate-pulse rounded bg-white/10" />
+                  <div className="h-3 w-32 animate-pulse rounded bg-white/10" />
                   <div className="h-3 w-28 animate-pulse rounded bg-white/10" />
+                  <span className="sr-only">Loading weather…</span>
                 </div>
               ) : (
                 <>
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="flex items-baseline gap-1 leading-none">
-                        <span className="display-number text-[36px] text-white">
+                        <span className="display-number text-[36px] text-white tabular-nums">
                           {Math.round(toUnit(weather.temp))}
                         </span>
                         <button
                           type="button"
                           onClick={toggleUnit}
-                          aria-label={`Switch to °${unit === "F" ? "C" : "F"}`}
+                          aria-label={`Temperature ${Math.round(toUnit(weather.temp))} degrees ${unit}. Switch to degrees ${unit === "F" ? "C" : "F"}.`}
                           title={`Switch to °${unit === "F" ? "C" : "F"}`}
-                          className="rounded px-1 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                          className="focus-ring-invert rounded px-1 text-[13px] font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                         >
                           °{unit}
                         </button>
                       </div>
-                      <p className="mt-1 truncate text-[10px] capitalize tracking-wide text-white/70">
+                      <p className="mt-1 truncate text-[10px] capitalize tracking-wide text-white/75">
                         {weather.description}
                         <span className="mx-1.5 text-white/30">·</span>
                         <span className="tabular">
@@ -270,16 +288,16 @@ export function HeroBanner() {
                       {weatherIcon(weather.icon, "h-5 w-5")}
                     </div>
                   </div>
-                  <div className="mt-2 flex gap-3 text-[10px] text-white/70 tabular">
-                    <span className="inline-flex items-center gap-1">
-                      <Droplets className="h-3 w-3 text-sm-gold/80" />
+                  <div className="mt-2 flex gap-3 text-[10px] text-white/75 tabular">
+                    <span className="inline-flex items-center gap-1" aria-label={`Humidity ${Math.round(weather.humidity)} percent`}>
+                      <Droplets className="h-3 w-3 text-sm-gold/80" aria-hidden="true" />
                       {Math.round(weather.humidity)}%
                     </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Wind className="h-3 w-3 text-sm-gold/80" />
+                    <span className="inline-flex items-center gap-1" aria-label={`Wind ${Math.round(weather.windSpeed)} miles per hour`}>
+                      <Wind className="h-3 w-3 text-sm-gold/80" aria-hidden="true" />
                       {Math.round(weather.windSpeed)} mph
                     </span>
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1" aria-label={`Feels like ${Math.round(toUnit(weather.feelsLike))} degrees`}>
                       <span className="text-sm-gold/80">Feels</span>
                       {Math.round(toUnit(weather.feelsLike))}°
                     </span>
@@ -289,22 +307,29 @@ export function HeroBanner() {
             </div>
 
             {/* Air Quality */}
-            <div className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+            <div
+              className="rounded-lg border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
+              aria-label="Air quality"
+              role="region"
+            >
               {aqiError ? (
-                <p className="text-[11px] text-white/60">AQI unavailable</p>
+                <p className="text-[11px] text-white/70" role="status">
+                  Couldn’t load air quality — try refreshing.
+                </p>
               ) : !aqi || !aqBand ? (
-                <div className="space-y-2">
-                  <div className="h-6 w-20 animate-pulse rounded bg-white/10" />
-                  <div className="h-3 w-24 animate-pulse rounded bg-white/10" />
+                <div className="space-y-2" aria-label="Loading air quality" role="status">
+                  <div className="h-7 w-20 animate-pulse rounded bg-white/10" />
+                  <div className="h-3 w-28 animate-pulse rounded bg-white/10" />
+                  <span className="sr-only">Loading air quality…</span>
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-baseline gap-1 leading-none">
-                      <span className="display-number text-[28px] text-white">
+                      <span className="display-number text-[28px] text-white tabular-nums">
                         {aqi.aqi}
                       </span>
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/50">
+                      <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/55">
                         AQI · US EPA
                       </span>
                     </div>
@@ -313,7 +338,7 @@ export function HeroBanner() {
                       style={{ color: aqBand.hex }}
                     >
                       {aqBand.label}
-                      <span className="ml-2 font-normal text-white/55 tabular">
+                      <span className="ml-2 font-normal text-white/60 tabular">
                         PM2.5 {Math.round(aqi.pm25)} · O₃{" "}
                         {Math.round(aqi.o3)}
                       </span>
@@ -321,6 +346,7 @@ export function HeroBanner() {
                   </div>
                   <Leaf
                     className="h-5 w-5 flex-shrink-0"
+                    aria-hidden="true"
                     style={{ color: aqBand.hex }}
                   />
                 </div>

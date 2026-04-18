@@ -14,6 +14,12 @@ export type WidgetShellProps = {
   children: React.ReactNode;
   bodyClassName?: string;
   headerExtra?: React.ReactNode;
+  /**
+   * When false, the body wrapper drops `overflow-auto`. Widgets whose
+   * content always fits (e.g. hero lunch menu, calendar list, quick-links
+   * grid) pass `scrollable={false}` to prevent phantom scrollbars.
+   */
+  scrollable?: boolean;
 };
 
 const accentBarClass: Record<WidgetAccent, string> = {
@@ -31,6 +37,7 @@ export function WidgetShell({
   children,
   bodyClassName,
   headerExtra,
+  scrollable = true,
 }: WidgetShellProps) {
   return (
     <article
@@ -41,6 +48,7 @@ export function WidgetShell({
         "rounded-[10px] border border-sm-navy/10 bg-white transition-colors",
         "hover:border-sm-navy/25",
       )}
+      aria-label={title}
     >
       {/* The entire header is the drag handle — mirrors YISS UX. */}
       <header className="drag-handle relative flex items-start justify-between gap-2 pl-3 pr-3 pt-3.5 pb-2.5 select-none sm:pl-4 sm:pr-4">
@@ -71,17 +79,19 @@ export function WidgetShell({
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-transparent px-2 py-1 text-[11px] font-medium text-sm-text-muted transition-colors hover:border-sm-border hover:text-sm-navy"
+              className="focus-ring inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-transparent px-2 py-1 text-[11px] font-medium text-sm-text-muted transition-colors hover:border-sm-border hover:text-sm-navy"
+              aria-label={`${hrefLabel ?? "Open"} — ${title}`}
             >
               {hrefLabel ?? "Open"}
-              <ExternalLink className="h-3 w-3" />
+              <ExternalLink className="h-3 w-3" aria-hidden="true" />
             </a>
           )}
         </div>
       </header>
       <div
         className={cn(
-          "relative flex-1 overflow-auto px-3 pb-4 sm:px-4",
+          "relative flex-1 px-3 pb-4 sm:px-4",
+          scrollable ? "overflow-auto" : "overflow-hidden",
           bodyClassName,
         )}
       >

@@ -52,11 +52,11 @@ function DashboardFooter() {
               href="https://www.stmarksschool.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="uppercase tracking-[0.15em] hover:text-sm-navy transition-colors"
+              className="focus-ring rounded-sm uppercase tracking-[0.15em] hover:text-sm-navy transition-colors"
             >
               School Website
             </a>
-            <span className="hidden h-3 w-px bg-sm-border sm:block" />
+            <span className="hidden h-3 w-px bg-sm-border sm:block" aria-hidden="true" />
             <div className="md:text-right">
               <p className="uppercase tracking-[0.15em]">
                 Developed by{" "}
@@ -66,7 +66,7 @@ function DashboardFooter() {
               </p>
               <a
                 href="mailto:ikonkim@stmarksschool.org"
-                className="break-all hover:text-sm-navy transition-colors"
+                className="focus-ring rounded-sm break-all hover:text-sm-navy transition-colors"
               >
                 ikonkim@stmarksschool.org
               </a>
