@@ -28,26 +28,26 @@ export function DashboardShell() {
 function DashboardFooter() {
   return (
     <footer className="mt-6 border-t border-sm-border bg-white">
-      <div className="mx-auto max-w-full px-6 xl:px-10 py-6">
+      <div className="mx-auto max-w-full px-4 py-6 sm:px-6 xl:px-10">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Image
               src="/sm-logo.svg"
               alt="St. Mark's School"
               width={120}
               height={21}
-              className="h-5 w-auto opacity-70"
+              className="h-5 w-auto shrink-0 opacity-70"
             />
-            <div className="h-8 w-px bg-sm-border" />
-            <div>
+            <div className="hidden h-8 w-px shrink-0 bg-sm-border sm:block" />
+            <div className="min-w-0">
               <p className="label-micro mb-0.5">Student Dashboard</p>
-              <p className="text-[10px] text-sm-text-muted">
+              <p className="text-[10px] leading-snug text-sm-text-muted">
                 25 Marlboro Road · Southborough, MA 01772 · 508.786.6000
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-[10px] text-sm-text-muted">
+          <div className="flex w-full flex-wrap items-center gap-3 text-[10px] text-sm-text-muted md:w-auto md:gap-4">
             <a
               href="https://www.stmarksschool.org"
               target="_blank"
@@ -56,8 +56,8 @@ function DashboardFooter() {
             >
               School Website
             </a>
-            <span className="h-3 w-px bg-sm-border" />
-            <div className="text-right">
+            <span className="hidden h-3 w-px bg-sm-border sm:block" />
+            <div className="md:text-right">
               <p className="uppercase tracking-[0.15em]">
                 Developed by{" "}
                 <span className="font-semibold text-sm-text-light">
@@ -66,7 +66,7 @@ function DashboardFooter() {
               </p>
               <a
                 href="mailto:ikonkim@stmarksschool.org"
-                className="hover:text-sm-navy transition-colors"
+                className="break-all hover:text-sm-navy transition-colors"
               >
                 ikonkim@stmarksschool.org
               </a>

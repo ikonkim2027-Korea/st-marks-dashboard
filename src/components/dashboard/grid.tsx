@@ -4,12 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
-// Widget components are provided by Stage 2 (widget-migrators).
-// Each file is expected to export a named component matching `*Widget`.
-// The import paths below are the contract: if a key is "weather", the
-// component lives at `@/components/widgets/weather.tsx` and exports
-// `WeatherWidget`. See `_workspace/01_layout-architect_widget-api.md`.
-import { WeatherWidget } from "@/components/widgets/weather";
+// Widget components. Weather is intentionally NOT a grid cell — climate and
+// air-quality info live in the hero banner. See `dashboard/hero-banner.tsx`.
 import { CanvasWidget } from "@/components/widgets/canvas";
 import { LunchWidget } from "@/components/widgets/lunch";
 import { AthleticsWidget } from "@/components/widgets/athletics";
@@ -20,7 +16,6 @@ import { QuickLinksWidget } from "@/components/widgets/quick-links";
 import { BlankWidget } from "@/components/widgets/blank";
 
 export type WidgetKey =
-  | "weather"
   | "canvas"
   | "lunch"
   | "athletics"
@@ -31,7 +26,6 @@ export type WidgetKey =
   | "blank";
 
 const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
-  weather: () => <WeatherWidget />,
   canvas: () => <CanvasWidget />,
   lunch: () => <LunchWidget />,
   athletics: () => <AthleticsWidget />,
@@ -43,14 +37,13 @@ const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
 };
 
 const DEFAULT_ORDER: WidgetKey[] = [
-  "weather",
+  "quick-links",
   "canvas",
   "lunch",
   "athletics",
   "news",
   "calendar",
   "instagram",
-  "quick-links",
   "blank",
 ];
 
@@ -219,12 +212,12 @@ export function DashboardGrid() {
 
   if (!hydrated) {
     return (
-      <div className="mx-auto w-full max-w-full px-6 pb-10 pt-4 xl:px-10">
+      <div className="mx-auto w-full max-w-full px-4 pb-10 pt-4 sm:px-6 xl:px-10">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
             <div
               key={i}
-              className="h-[360px] animate-pulse rounded-[10px] bg-sm-border/50"
+              className="h-[320px] animate-pulse rounded-[10px] bg-sm-border/50 sm:h-[380px]"
             />
           ))}
         </div>
@@ -233,8 +226,8 @@ export function DashboardGrid() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-full px-6 pb-10 pt-4 xl:px-10">
-      <div className="grid auto-rows-[380px] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto w-full max-w-full px-4 pb-10 pt-4 sm:px-6 xl:px-10">
+      <div className="grid auto-rows-auto grid-cols-1 gap-3 sm:auto-rows-[380px] sm:grid-cols-2 lg:grid-cols-3">
         {order.map((key) => {
           const isDragging = dragKey === key;
           const isHover = hoverKey === key && dragKey !== key;
@@ -245,7 +238,7 @@ export function DashboardGrid() {
               data-widget-cell
               data-widget-key={key}
               className={cn(
-                "relative transition-transform duration-200 ease-out",
+                "relative min-h-[320px] transition-transform duration-200 ease-out sm:min-h-0",
                 isDragging && "opacity-30",
                 isHover && "scale-[1.02]",
               )}

@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Menu, X, ExternalLink, RotateCcw } from "lucide-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { useTemperatureUnit, type TempUnit } from "@/lib/temperature";
 
 const navLinks = [
   { name: "Dashboard", href: "#" },
@@ -15,7 +13,6 @@ const navLinks = [
 
 export function DashboardHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [unit, setUnit] = useTemperatureUnit();
 
   const handleResetLayout = () => {
     (window as unknown as { __stmarksReset?: () => void }).__stmarksReset?.();
@@ -23,7 +20,7 @@ export function DashboardHeader() {
 
   return (
     <header className="bg-sm-navy sticky top-0 z-50 border-b-[2px] border-sm-gold">
-      <div className="mx-auto max-w-full px-6 xl:px-10">
+      <div className="mx-auto max-w-full px-4 sm:px-6 xl:px-10">
         <div className="flex h-14 items-center justify-between gap-4">
           {/* Logo */}
           <a href="#" className="flex items-center gap-3">
@@ -61,7 +58,6 @@ export function DashboardHeader() {
 
           {/* Right-side controls */}
           <div className="hidden md:flex items-center gap-2">
-            <TempUnitToggle unit={unit} onChange={setUnit} />
             <button
               onClick={handleResetLayout}
               className="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-transparent px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-wide text-white/75 transition-colors hover:bg-white/10 hover:text-white"
@@ -99,55 +95,31 @@ export function DashboardHeader() {
                 {link.name}
               </a>
             ))}
-            <div className="mt-2 flex items-center justify-between gap-2 px-3 pt-2">
-              <TempUnitToggle unit={unit} onChange={setUnit} />
+            <a
+              href="https://www.stmarksschool.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-white/80 hover:bg-white/10 hover:text-white"
+            >
+              <span>SMS.org</span>
+              <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+            </a>
+            <div className="mt-2 border-t border-white/10 px-3 pt-3">
               <button
-                onClick={handleResetLayout}
-                className="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-transparent px-2.5 py-1.5 text-[11px] font-medium uppercase tracking-wide text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                onClick={() => {
+                  handleResetLayout();
+                  setMobileOpen(false);
+                }}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-white/20 bg-transparent px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-white/85 transition-colors hover:bg-white/10 hover:text-white"
               >
-                <RotateCcw className="h-3 w-3" />
-                Reset
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset Layout
               </button>
             </div>
           </nav>
         )}
       </div>
     </header>
-  );
-}
-
-function TempUnitToggle({
-  unit,
-  onChange,
-}: {
-  unit: TempUnit;
-  onChange: (next: TempUnit) => void;
-}) {
-  return (
-    <div
-      role="group"
-      aria-label="Temperature unit"
-      className="inline-flex items-center rounded-md border border-white/20 bg-transparent p-0.5"
-    >
-      {(["F", "C"] as const).map((u) => {
-        const active = unit === u;
-        return (
-          <button
-            key={u}
-            type="button"
-            onClick={() => onChange(u)}
-            aria-pressed={active}
-            className={cn(
-              "inline-flex h-6 w-8 items-center justify-center rounded-[4px] text-[11px] font-semibold tracking-wide tabular transition-colors",
-              active
-                ? "bg-white text-sm-navy"
-                : "text-white/70 hover:text-white",
-            )}
-          >
-            °{u}
-          </button>
-        );
-      })}
-    </div>
   );
 }

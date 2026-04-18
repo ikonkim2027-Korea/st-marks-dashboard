@@ -43,7 +43,7 @@ export function WidgetShell({
       )}
     >
       {/* The entire header is the drag handle — mirrors YISS UX. */}
-      <header className="drag-handle relative flex items-start justify-between gap-3 px-4 pt-3.5 pb-2.5 select-none">
+      <header className="drag-handle relative flex items-start justify-between gap-2 px-3 pt-3.5 pb-2.5 select-none sm:px-4">
         {/* Left accent bar in St. Mark's CI */}
         <span
           aria-hidden
@@ -52,7 +52,7 @@ export function WidgetShell({
             accentBarClass[accent],
           )}
         />
-        <div className="flex min-w-0 items-start gap-2 pl-3">
+        <div className="flex min-w-0 flex-1 items-start gap-2 pl-3">
           <div
             aria-hidden
             className={cn(
@@ -63,17 +63,17 @@ export function WidgetShell({
           >
             <GripVertical className="h-4 w-4" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             {eyebrow && (
-              <p className="label-micro">{eyebrow}</p>
+              <p className="label-micro truncate">{eyebrow}</p>
             )}
-            <h3 className="font-semibold leading-tight text-sm-navy text-[15px] tracking-tight">
+            <h3 className="truncate font-semibold leading-tight text-sm-navy text-[15px] tracking-tight">
               {title}
             </h3>
           </div>
         </div>
         <div
-          className="flex items-center gap-2"
+          className="flex shrink-0 items-center gap-1.5 sm:gap-2"
           // Prevent drag when user clicks controls / external link inside the header.
           onPointerDown={(e) => e.stopPropagation()}
         >
@@ -83,7 +83,7 @@ export function WidgetShell({
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full border border-transparent px-2 py-1 text-[11px] font-medium text-sm-text-muted transition-colors hover:border-sm-border hover:text-sm-navy"
+              className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-transparent px-2 py-1 text-[11px] font-medium text-sm-text-muted transition-colors hover:border-sm-border hover:text-sm-navy"
             >
               {hrefLabel ?? "Open"}
               <ExternalLink className="h-3 w-3" />
@@ -93,7 +93,7 @@ export function WidgetShell({
       </header>
       <div
         className={cn(
-          "relative flex-1 overflow-auto px-4 pb-4",
+          "relative flex-1 overflow-auto px-3 pb-4 sm:px-4",
           bodyClassName,
         )}
       >

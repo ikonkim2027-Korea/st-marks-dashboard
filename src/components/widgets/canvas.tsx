@@ -212,7 +212,7 @@ export function CanvasWidget() {
               value={domainInput}
               onChange={(e) => setDomainInput(e.target.value)}
               placeholder="stmarks.instructure.com"
-              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2 text-xs text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
+              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
             />
           </div>
           <div>
@@ -222,7 +222,7 @@ export function CanvasWidget() {
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
               placeholder="Paste token from IT"
-              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2 text-xs text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
+              className="w-full border-0 border-b border-sm-border bg-transparent px-0 py-2.5 text-[13px] text-sm-text placeholder:text-sm-text-muted focus:outline-none focus:border-sm-navy transition-colors"
             />
             <p className="text-[9px] text-sm-text-muted mt-1.5">
               Stored locally in browser only
@@ -232,14 +232,14 @@ export function CanvasWidget() {
             <button
               onClick={saveConfig}
               disabled={!tokenInput.trim()}
-              className="flex-1 bg-sm-navy px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-sm-navy-light transition-colors disabled:opacity-40"
+              className="min-h-[40px] flex-1 bg-sm-navy px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-sm-navy-light transition-colors disabled:opacity-40"
             >
               Connect
             </button>
             {config && (
               <button
                 onClick={clearConfig}
-                className="border border-sm-danger/40 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-danger hover:bg-sm-danger/5 transition-colors"
+                className="min-h-[40px] border border-sm-danger/40 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-danger hover:bg-sm-danger/5 transition-colors"
               >
                 Disconnect
               </button>
