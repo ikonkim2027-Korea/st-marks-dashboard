@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 import type { AthleticsEvent } from "@/types";
+import { WidgetShell } from "./widget-shell";
 
 function getMockEvents(): AthleticsEvent[] {
   return [
@@ -52,31 +52,17 @@ function getMockEvents(): AthleticsEvent[] {
   ];
 }
 
-export default function Athletics() {
-  const [events, setEvents] = useState<AthleticsEvent[]>([]);
-
-  useEffect(() => {
-    setEvents(getMockEvents());
-  }, []);
+export function AthleticsWidget() {
+  const [events] = useState<AthleticsEvent[]>(() => getMockEvents());
 
   return (
-    <div className="widget-card p-6 h-full flex flex-col" id="athletics">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="divider-gold" />
-          <span className="label-micro">Athletics — ISL</span>
-        </div>
-        <a
-          href="https://www.stmarksschool.org/athletics/schedule"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
-        >
-          Full Schedule
-          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
-      </div>
-
+    <WidgetShell
+      title="Athletics"
+      eyebrow="ISL"
+      accent="navy"
+      href="https://www.stmarksschool.org/athletics/schedule"
+      hrefLabel="Full Schedule"
+    >
       <div className="space-y-0 flex-1">
         {events.map((event, idx) => {
           const isNext = idx === 0 && !event.result;
@@ -133,6 +119,6 @@ export default function Athletics() {
           );
         })}
       </div>
-    </div>
+    </WidgetShell>
   );
 }

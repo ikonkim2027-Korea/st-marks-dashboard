@@ -112,3 +112,13 @@ html {
   50% { opacity: 0.4; }
 }
 .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Drag handle — used by WidgetShell header. Grid binds pointerdown to any
+   `.drag-handle` inside a widget cell for the drag-swap reorder UX. */
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}

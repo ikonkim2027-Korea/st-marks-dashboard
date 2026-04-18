@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AlertCircle,
-  CheckCircle2,
   ArrowUpRight,
+  CheckCircle2,
+  Info,
   Settings,
   X,
-  Info,
 } from "lucide-react";
+import { WidgetShell } from "./widget-shell";
 
 interface Assignment {
   id: number;
@@ -58,7 +59,7 @@ function formatDueDate(dueDate: string): string {
     .toUpperCase();
 }
 
-export default function CanvasAssignments() {
+export function CanvasWidget() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -127,64 +128,82 @@ export default function CanvasAssignments() {
     (a) => a.due_at && a.submission?.workflow_state !== "graded"
   );
 
+  // Header "settings" button only shows when we have a saved config (to match legacy UX).
+  const headerExtra = config ? (
+    <button
+      onClick={() => setShowSetup(true)}
+      onMouseDown={(e) => e.stopPropagation()}
+      className="text-sm-text-muted hover:text-sm-text transition-colors"
+      aria-label="Canvas settings"
+    >
+      <Settings className="h-3.5 w-3.5" />
+    </button>
+  ) : null;
+
+  const eyebrowLabel = showSetup ? "CANVAS SETUP" : "ASSIGNMENTS";
+  const titleLabel = "Canvas";
+
   // Connect prompt (no config, not in setup)
   if (!config && !showSetup) {
     return (
-      <div className="widget-card p-6 h-full flex flex-col">
-        <div className="flex items-center gap-2 mb-5">
-          <span className="divider-gold" />
-          <span className="label-micro">Canvas Assignments</span>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
-          <p className="display-number text-[44px] text-sm-navy/20 mb-3">00</p>
-          <p className="text-sm font-bold text-sm-text mb-1">Not Connected</p>
-          <p className="text-[11px] text-sm-text-muted max-w-[260px] mb-5 leading-relaxed">
-            View upcoming assignments from Canvas.
-            <br />
-            Requires an API token from the school.
-          </p>
-          <button
-            onClick={() => setShowSetup(true)}
-            className="text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light border-b border-sm-navy pb-0.5 transition-colors"
-          >
-            Enter API Token →
-          </button>
-        </div>
-
-        <div className="flex items-start gap-2 pt-4 border-t border-sm-border/60">
-          <Info className="h-3 w-3 text-sm-gold mt-0.5 flex-shrink-0" />
-          <p className="text-[9px] text-sm-text-muted leading-relaxed">
-            Student token generation is disabled. Contact{" "}
-            <a
-              href="mailto:ikonkim@stmarksschool.org"
-              className="underline underline-offset-2 hover:text-sm-navy"
+      <WidgetShell
+        title={titleLabel}
+        eyebrow={eyebrowLabel}
+        accent="orange"
+      >
+        <div className="flex h-full flex-col">
+          <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
+            <p className="display-number text-[44px] text-sm-navy/20 mb-3">00</p>
+            <p className="text-sm font-bold text-sm-text mb-1">Not Connected</p>
+            <p className="text-[11px] text-sm-text-muted max-w-[260px] mb-5 leading-relaxed">
+              View upcoming assignments from Canvas.
+              <br />
+              Requires an API token from the school.
+            </p>
+            <button
+              onClick={() => setShowSetup(true)}
+              className="text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light border-b border-sm-navy pb-0.5 transition-colors"
             >
-              ikonkim@stmarksschool.org
-            </a>
-            {" "}or IT Help Desk.
-          </p>
+              Enter API Token →
+            </button>
+          </div>
+
+          <div className="flex items-start gap-2 pt-4 border-t border-sm-border/60">
+            <Info className="h-3 w-3 text-sm-gold mt-0.5 flex-shrink-0" />
+            <p className="text-[9px] text-sm-text-muted leading-relaxed">
+              Student token generation is disabled. Contact{" "}
+              <a
+                href="mailto:ikonkim@stmarksschool.org"
+                className="underline underline-offset-2 hover:text-sm-navy"
+              >
+                ikonkim@stmarksschool.org
+              </a>
+              {" "}or IT Help Desk.
+            </p>
+          </div>
         </div>
-      </div>
+      </WidgetShell>
     );
   }
 
   // Setup form
   if (showSetup) {
     return (
-      <div className="widget-card p-6 h-full">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2">
-            <span className="divider-gold" />
-            <span className="label-micro">Canvas Setup</span>
-          </div>
+      <WidgetShell
+        title={titleLabel}
+        eyebrow={eyebrowLabel}
+        accent="orange"
+        headerExtra={
           <button
             onClick={() => setShowSetup(false)}
+            onMouseDown={(e) => e.stopPropagation()}
             className="text-sm-text-muted hover:text-sm-text transition-colors"
+            aria-label="Close setup"
           >
             <X className="h-4 w-4" />
           </button>
-        </div>
+        }
+      >
         <div className="space-y-4">
           <div>
             <label className="label-micro block mb-1.5">Canvas Domain</label>
@@ -227,30 +246,21 @@ export default function CanvasAssignments() {
             )}
           </div>
         </div>
-      </div>
+      </WidgetShell>
     );
   }
 
   return (
-    <div className="widget-card p-6 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="divider-gold" />
-          <span className="label-micro">Canvas Assignments</span>
-          {pending.length > 0 && (
-            <span className="ml-1 px-1.5 py-0.5 bg-sm-gold text-sm-navy text-[9px] font-black tabular">
-              {String(pending.length).padStart(2, "0")}
-            </span>
-          )}
-        </div>
-        <button
-          onClick={() => setShowSetup(true)}
-          className="text-sm-text-muted hover:text-sm-text transition-colors"
-        >
-          <Settings className="h-3.5 w-3.5" />
-        </button>
-      </div>
-
+    <WidgetShell
+      title={titleLabel}
+      eyebrow={
+        pending.length > 0
+          ? `ASSIGNMENTS · ${String(pending.length).padStart(2, "0")}`
+          : "ASSIGNMENTS"
+      }
+      accent="orange"
+      headerExtra={headerExtra}
+    >
       {loading ? (
         <div className="space-y-2 flex-1">
           {[1, 2, 3].map((i) => (
@@ -258,7 +268,7 @@ export default function CanvasAssignments() {
           ))}
         </div>
       ) : error ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
           <AlertCircle className="h-5 w-5 text-sm-danger mb-2" />
           <p className="text-xs text-sm-danger">{error}</p>
           <button
@@ -269,7 +279,7 @@ export default function CanvasAssignments() {
           </button>
         </div>
       ) : pending.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <div className="flex-1 flex flex-col items-center justify-center text-center h-full">
           <CheckCircle2 className="h-8 w-8 text-sm-success mb-3" />
           <p className="display-number text-2xl text-sm-text mb-1">
             ALL CAUGHT UP
@@ -325,6 +335,6 @@ export default function CanvasAssignments() {
           })}
         </div>
       )}
-    </div>
+    </WidgetShell>
   );
 }

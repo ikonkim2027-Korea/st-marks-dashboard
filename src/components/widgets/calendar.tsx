@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 import type { CalendarEvent } from "@/types";
+import { WidgetShell } from "./widget-shell";
 
 function getMockEvents(): CalendarEvent[] {
   return [
@@ -56,31 +56,17 @@ function parseDatePart(dateStr: string): { day: string; month: string } {
   return { day: dayNum, month: month?.toUpperCase() || "" };
 }
 
-export default function CalendarWidget() {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-
-  useEffect(() => {
-    setEvents(getMockEvents());
-  }, []);
+export function CalendarWidget() {
+  const [events] = useState<CalendarEvent[]>(() => getMockEvents());
 
   return (
-    <div className="widget-card p-6 h-full flex flex-col" id="calendar">
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center gap-2">
-          <span className="divider-gold" />
-          <span className="label-micro">Upcoming Events</span>
-        </div>
-        <a
-          href="https://www.stmarksschool.org/about/calendar"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
-        >
-          Full Calendar
-          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
-      </div>
-
+    <WidgetShell
+      title="Calendar"
+      eyebrow="UPCOMING EVENTS"
+      accent="gold"
+      href="https://www.stmarksschool.org/about/calendar"
+      hrefLabel="Full Calendar"
+    >
       <div className="space-y-0 flex-1">
         {events.map((event, idx) => {
           const { day, month } = parseDatePart(event.date);
@@ -127,6 +113,6 @@ export default function CalendarWidget() {
           );
         })}
       </div>
-    </div>
+    </WidgetShell>
   );
 }

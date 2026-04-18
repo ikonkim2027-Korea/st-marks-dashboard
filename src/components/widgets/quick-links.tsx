@@ -19,6 +19,7 @@ import {
   Shield,
   ArrowUpRight,
 } from "lucide-react";
+import { WidgetShell } from "./widget-shell";
 
 interface LinkItem {
   name: string;
@@ -135,49 +136,40 @@ const links: LinkItem[] = [
 
 const categories = ["Academic", "Campus", "Resources", "Tools"];
 
-export default function QuickLinks() {
+export function QuickLinksWidget() {
   return (
-    <div className="widget-card p-6" id="links">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <span className="divider-gold" />
-          <span className="label-micro">Quick Links Index</span>
-        </div>
-        <a
-          href="https://www.stmarksschool.org"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-sm-navy hover:text-sm-navy-light transition-colors"
-        >
-          School Website
-          <ArrowUpRight className="h-3 w-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+    <WidgetShell
+      title="Quick Links"
+      eyebrow="INDEX"
+      accent="navy"
+      href="https://www.stmarksschool.org"
+      hrefLabel="Website"
+    >
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4 pt-1">
         {categories.map((cat) => {
           const catLinks = links.filter((l) => l.category === cat);
           return (
             <div key={cat}>
-              <div className="flex items-center gap-2 mb-3 pb-2 border-b border-sm-border/60">
+              <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-sm-border/60">
                 <span className="text-[9px] font-bold text-sm-gold">●</span>
-                <h4 className="text-[10px] font-bold text-sm-navy uppercase tracking-[0.2em]">
+                <h4 className="text-[9px] font-bold text-sm-navy uppercase tracking-[0.2em]">
                   {cat}
                 </h4>
               </div>
-              <ul className="space-y-1">
+              <ul className="space-y-0.5">
                 {catLinks.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 py-1.5 text-sm-text hover:text-sm-navy transition-colors"
+                      className="group flex items-center gap-2 py-1 text-sm-text hover:text-sm-navy transition-colors"
+                      onMouseDown={(e) => e.stopPropagation()}
                     >
                       <span className="text-sm-text-muted group-hover:text-sm-navy transition-colors">
                         {link.icon}
                       </span>
-                      <span className="text-[12px] font-medium flex-1 truncate">
+                      <span className="text-[11px] font-medium flex-1 truncate">
                         {link.name}
                       </span>
                       <ArrowUpRight className="h-3 w-3 text-sm-text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all flex-shrink-0" />
@@ -189,6 +181,6 @@ export default function QuickLinks() {
           );
         })}
       </div>
-    </div>
+    </WidgetShell>
   );
 }
