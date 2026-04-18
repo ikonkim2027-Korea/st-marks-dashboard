@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   title: "SM Hub | St. Mark's School Student Dashboard",
   description:
     "All-in-one student dashboard for St. Mark's School, Southborough, MA. Lunch menus, athletics, news, calendar, and more.",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // Icons are auto-detected from `app/icon.svg` (all modern browsers),
+  // `app/favicon.ico` (legacy fallback), and `app/apple-icon.tsx` (iOS).
+  // See node_modules/next/dist/docs/.../metadata/app-icons.md.
 };
 
 export default function RootLayout({
