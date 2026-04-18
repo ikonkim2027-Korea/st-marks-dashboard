@@ -1,6 +1,6 @@
 "use client";
 
-import { GripVertical, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type WidgetAccent = "navy" | "gold" | "orange";
@@ -43,7 +43,7 @@ export function WidgetShell({
       )}
     >
       {/* The entire header is the drag handle — mirrors YISS UX. */}
-      <header className="drag-handle relative flex items-start justify-between gap-2 px-3 pt-3.5 pb-2.5 select-none sm:px-4">
+      <header className="drag-handle relative flex items-start justify-between gap-2 pl-3 pr-3 pt-3.5 pb-2.5 select-none sm:pl-4 sm:pr-4">
         {/* Left accent bar in St. Mark's CI */}
         <span
           aria-hidden
@@ -52,25 +52,13 @@ export function WidgetShell({
             accentBarClass[accent],
           )}
         />
-        <div className="flex min-w-0 flex-1 items-start gap-2 pl-3">
-          <div
-            aria-hidden
-            className={cn(
-              "mt-0.5 -ml-1 rounded px-0.5 py-0.5 text-sm-text-muted",
-              "opacity-0 transition-opacity",
-              "group-hover/widget:opacity-70",
-            )}
-          >
-            <GripVertical className="h-4 w-4" />
-          </div>
-          <div className="min-w-0 flex-1">
-            {eyebrow && (
-              <p className="label-micro truncate">{eyebrow}</p>
-            )}
-            <h3 className="truncate font-semibold leading-tight text-sm-navy text-[15px] tracking-tight">
-              {title}
-            </h3>
-          </div>
+        <div className="min-w-0 flex-1">
+          {eyebrow && (
+            <p className="label-micro truncate">{eyebrow}</p>
+          )}
+          <h3 className="truncate font-semibold leading-tight text-sm-navy text-[15px] tracking-tight">
+            {title}
+          </h3>
         </div>
         <div
           className="flex shrink-0 items-center gap-1.5 sm:gap-2"
