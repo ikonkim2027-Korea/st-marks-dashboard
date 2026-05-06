@@ -1,0 +1,100 @@
+{
+  "_comment": "Edit this file weekly to update the lunch menu. Day keys are 'Mon'..'Sun'. Each day has 'diningHall' and 'lionsDen' arrays. Set 'isVegetarian: true' to show the V tag. Saved here so the dashboard works without FLIK API access.",
+  "updated": "2026-05-06",
+  "menus": {
+    "Mon": {
+      "diningHall": [
+        { "name": "Herb-Roasted Chicken with Pan Gravy" },
+        { "name": "Penne Primavera", "isVegetarian": true },
+        { "name": "Caesar Salad Bar" },
+        { "name": "Tomato Basil Soup", "isVegetarian": true },
+        { "name": "Fresh Fruit & Yogurt Bar" }
+      ],
+      "lionsDen": [
+        { "name": "Build Your Own Burger" },
+        { "name": "Loaded Fries" },
+        { "name": "Grilled Cheese", "isVegetarian": true }
+      ]
+    },
+    "Tue": {
+      "diningHall": [
+        { "name": "Baked Cod with Lemon Butter" },
+        { "name": "Mushroom Risotto", "isVegetarian": true },
+        { "name": "Roasted Root Vegetables", "isVegetarian": true },
+        { "name": "Minestrone Soup", "isVegetarian": true },
+        { "name": "Garden Salad Bar" }
+      ],
+      "lionsDen": [
+        { "name": "Chicken Tenders" },
+        { "name": "Mac & Cheese", "isVegetarian": true },
+        { "name": "Veggie Wrap", "isVegetarian": true }
+      ]
+    },
+    "Wed": {
+      "diningHall": [
+        { "name": "Korean BBQ Beef Bowl" },
+        { "name": "Tofu Stir-Fry", "isVegetarian": true },
+        { "name": "Steamed Jasmine Rice", "isVegetarian": true },
+        { "name": "Miso Soup", "isVegetarian": true },
+        { "name": "Asian Slaw" }
+      ],
+      "lionsDen": [
+        { "name": "Build Your Own Burrito" },
+        { "name": "Sweet Potato Fries", "isVegetarian": true },
+        { "name": "Quesadilla", "isVegetarian": true }
+      ]
+    },
+    "Thu": {
+      "diningHall": [
+        { "name": "Roasted Turkey Breast" },
+        { "name": "Eggplant Parmesan", "isVegetarian": true },
+        { "name": "Garlic Mashed Potatoes", "isVegetarian": true },
+        { "name": "Chicken Noodle Soup" },
+        { "name": "Antipasto Salad" }
+      ],
+      "lionsDen": [
+        { "name": "Pizza Bar" },
+        { "name": "Garlic Knots", "isVegetarian": true },
+        { "name": "Caesar Wrap" }
+      ]
+    },
+    "Fri": {
+      "diningHall": [
+        { "name": "Fish & Chips" },
+        { "name": "Veggie Pad Thai", "isVegetarian": true },
+        { "name": "Coleslaw", "isVegetarian": true },
+        { "name": "Clam Chowder" },
+        { "name": "Greek Salad", "isVegetarian": true }
+      ],
+      "lionsDen": [
+        { "name": "Sushi Bar" },
+        { "name": "Edamame", "isVegetarian": true },
+        { "name": "Spring Rolls", "isVegetarian": true }
+      ]
+    },
+    "Sat": {
+      "diningHall": [
+        { "name": "Brunch — Pancakes & Bacon" },
+        { "name": "Veggie Omelet Station", "isVegetarian": true },
+        { "name": "Hash Browns", "isVegetarian": true },
+        { "name": "Fresh Fruit Plate", "isVegetarian": true }
+      ],
+      "lionsDen": [
+        { "name": "Sliders" },
+        { "name": "Onion Rings", "isVegetarian": true }
+      ]
+    },
+    "Sun": {
+      "diningHall": [
+        { "name": "Roast Beef with Au Jus" },
+        { "name": "Stuffed Bell Peppers", "isVegetarian": true },
+        { "name": "Roasted Vegetables", "isVegetarian": true },
+        { "name": "Butternut Squash Soup", "isVegetarian": true }
+      ],
+      "lionsDen": [
+        { "name": "Brunch Bar" },
+        { "name": "Belgian Waffles", "isVegetarian": true }
+      ]
+    }
+  }
+}

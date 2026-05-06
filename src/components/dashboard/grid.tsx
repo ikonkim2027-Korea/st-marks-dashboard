@@ -6,54 +6,62 @@ import { cn } from "@/lib/utils";
 
 // Widget components. Weather is intentionally NOT a grid cell — climate and
 // air-quality info live in the hero banner. See `dashboard/hero-banner.tsx`.
-import { CanvasWidget } from "@/components/widgets/canvas";
 import { LunchWidget } from "@/components/widgets/lunch";
 import { AthleticsWidget } from "@/components/widgets/athletics";
 import { NewsWidget } from "@/components/widgets/news";
 import { CalendarWidget } from "@/components/widgets/calendar";
 import { InstagramWidget } from "@/components/widgets/instagram";
 import { QuickLinksWidget } from "@/components/widgets/quick-links";
-import { BlankWidget } from "@/components/widgets/blank";
+import { TodayScheduleWidget } from "@/components/widgets/today-schedule";
+import { NotesWidget } from "@/components/widgets/notes";
+import { CountdownWidget } from "@/components/widgets/countdown";
+import { HighlightWidget } from "@/components/widgets/highlight";
 
 export type WidgetKey =
-  | "canvas"
+  | "schedule"
   | "lunch"
   | "athletics"
   | "news"
   | "calendar"
   | "instagram"
   | "quick-links"
-  | "blank";
+  | "notes"
+  | "countdown"
+  | "highlight";
 
 const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
-  canvas: () => <CanvasWidget />,
+  schedule: () => <TodayScheduleWidget />,
   lunch: () => <LunchWidget />,
   athletics: () => <AthleticsWidget />,
   news: () => <NewsWidget />,
   calendar: () => <CalendarWidget />,
   instagram: () => <InstagramWidget />,
   "quick-links": () => <QuickLinksWidget />,
-  blank: () => <BlankWidget />,
+  notes: () => <NotesWidget />,
+  countdown: () => <CountdownWidget />,
+  highlight: () => <HighlightWidget />,
 };
 
 const DEFAULT_ORDER: WidgetKey[] = [
-  "quick-links",
-  "canvas",
+  "schedule",
   "lunch",
-  "athletics",
   "news",
+  "athletics",
+  "countdown",
   "calendar",
+  "notes",
+  "highlight",
   "instagram",
-  "blank",
+  "quick-links",
 ];
 
 const ALL_KEYS = new Set<WidgetKey>(DEFAULT_ORDER);
 
 // Map nav hash targets to the widget cell that should own each id.
-// Preserves the `#athletics`, `#calendar`, `#links` anchors referenced by
-// `DashboardHeader` nav after Stage 2 dropped the legacy `id=` attributes
-// from individual widget cards.
+// Preserves the `#schedule`, `#athletics`, `#calendar`, `#links` anchors
+// referenced by `DashboardHeader`.
 const ANCHOR_IDS: Partial<Record<WidgetKey, string>> = {
+  schedule: "schedule",
   athletics: "athletics",
   calendar: "calendar",
   "quick-links": "links",

@@ -1,64 +1,73 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarDays } from "lucide-react";
-import type { CalendarEvent } from "@/types";
+import { useEffect, useState } from "react";
+import { AlertCircle, CalendarDays } from "lucide-react";
 import { WidgetShell } from "./widget-shell";
 
-function getMockEvents(): CalendarEvent[] {
-  return [
-    {
-      id: "1",
-      title: "III & IV Form Saturday Program",
-      date: "Apr 12",
-      time: "9:00 AM",
-      category: "academic",
-    },
-    {
-      id: "2",
-      title: "Instrumental Music Concert",
-      date: "Apr 14",
-      time: "1:00 PM",
-      location: "PFAC",
-      category: "arts",
-    },
-    {
-      id: "3",
-      title: "Spirit Week",
-      date: "Apr 14–18",
-      category: "community",
-    },
-    {
-      id: "4",
-      title: "Groton Day",
-      date: "Apr 19",
-      category: "athletics",
-    },
-    {
-      id: "5",
-      title: "Seated Meal & Evening Chapel",
-      date: "Apr 22",
-      time: "6:00 PM",
-      location: "Dining Hall",
-      category: "community",
-    },
-    {
-      id: "6",
-      title: "Spring Break Begins",
-      date: "May 3",
-      category: "break",
-    },
-  ];
+interface CalEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string | null;
+  category: string;
 }
 
-function parseDatePart(dateStr: string): { day: string; month: string } {
-  const [month, day] = dateStr.split(" ");
-  const dayNum = day?.split("–")[0] || "";
-  return { day: dayNum, month: month?.toUpperCase() || "" };
+const TZ = "America/New_York";
+
+function parseDate(iso: string): { day: string; month: string; time: string } {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return { day: "", month: "", time: "" };
+  const fmtParts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ,
+    month: "short",
+    day: "numeric",
+  }).formatToParts(d);
+  const day = fmtParts.find((p) => p.type === "day")?.value ?? "";
+  const month = (
+    fmtParts.find((p) => p.type === "month")?.value ?? ""
+  ).toUpperCase();
+  const time = d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: TZ,
+  });
+  return { day, month, time };
+}
+
+function isAllDay(start: string): boolean {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TZ,
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(new Date(start));
+  const hour = parts.find((p) => p.type === "hour")?.value ?? "";
+  const minute = parts.find((p) => p.type === "minute")?.value ?? "";
+  return hour === "00" && minute === "00";
 }
 
 export function CalendarWidget() {
-  const [events] = useState<CalendarEvent[]>(() => getMockEvents());
+  const [events, setEvents] = useState<CalEvent[] | null>(null);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/calendar");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = (await res.json()) as { items: CalEvent[] };
+        if (!cancelled) setEvents(data.items || []);
+      } catch {
+        if (!cancelled) setError(true);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
 
   return (
     <WidgetShell
@@ -69,25 +78,54 @@ export function CalendarWidget() {
       hrefLabel="Full Calendar"
       scrollable={false}
     >
-      {events.length === 0 ? (
+      {error ? (
+        <div className="flex h-full flex-col items-center justify-center text-center" role="alert">
+          <AlertCircle className="h-5 w-5 text-sm-danger mb-2" aria-hidden="true" />
+          <p className="text-xs font-semibold text-sm-text mb-1">
+            Couldn&apos;t load calendar
+          </p>
+          <button
+            onClick={() => {
+              setError(false);
+              setReloadKey((k) => k + 1);
+            }}
+            className="focus-ring mt-3 min-h-[40px] rounded-sm px-3 text-[10px] font-bold uppercase tracking-[0.15em] text-sm-navy hover:underline"
+          >
+            Try again
+          </button>
+        </div>
+      ) : events === null ? (
+        <ul className="space-y-2" role="status" aria-label="Loading calendar">
+          {[1, 2, 3, 4].map((i) => (
+            <li key={i} className="h-12 animate-pulse rounded bg-sm-cream" />
+          ))}
+        </ul>
+      ) : events.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center text-center">
-          <CalendarDays className="h-7 w-7 text-sm-text-muted/60 mb-2" aria-hidden="true" />
-          <p className="text-sm font-semibold text-sm-text">Nothing on the calendar</p>
-          <p className="text-[11px] text-sm-text-muted mt-1">Check back soon for upcoming events.</p>
+          <CalendarDays
+            className="h-7 w-7 text-sm-text-muted/60 mb-2"
+            aria-hidden="true"
+          />
+          <p className="text-sm font-semibold text-sm-text">
+            Nothing on the calendar
+          </p>
+          <p className="text-[11px] text-sm-text-muted mt-1">
+            Check back soon for upcoming events.
+          </p>
         </div>
       ) : (
         <ul className="space-y-0 flex-1" aria-label="Upcoming calendar events">
-          {events.map((event, idx) => {
-            const { day, month } = parseDatePart(event.date);
+          {events.slice(0, 6).map((event, idx) => {
+            const { day, month, time } = parseDate(event.start);
             const isFirst = idx === 0;
+            const allDay = isAllDay(event.start);
             return (
               <li
-                key={event.id}
+                key={event.id + event.start}
                 className={`flex items-center gap-4 py-3 border-b border-sm-border/60 last:border-0 ${
                   isFirst ? "border-l-2 border-l-sm-gold pl-3 -ml-3" : ""
                 }`}
               >
-                {/* Date column */}
                 <div className="flex-shrink-0 w-12 text-center">
                   <p
                     className="display-number text-2xl text-sm-navy tabular-nums"
@@ -99,26 +137,20 @@ export function CalendarWidget() {
                     {month}
                   </p>
                 </div>
-
-                {/* Content */}
                 <div className="flex-1 min-w-0 border-l border-sm-border/60 pl-4">
-                  <h4 className="text-xs font-bold text-sm-text leading-snug">
+                  <h4 className="text-xs font-bold text-sm-text leading-snug truncate">
                     {event.title}
                   </h4>
                   <div className="flex items-center gap-2 mt-0.5 text-[10px] text-sm-text-muted leading-snug flex-wrap">
                     <span className="uppercase tracking-wider">
                       {event.category}
                     </span>
-                    {event.time && (
+                    {!allDay && time && (
                       <>
-                        <span className="text-sm-border" aria-hidden="true">·</span>
-                        <span className="tabular">{event.time}</span>
-                      </>
-                    )}
-                    {event.location && (
-                      <>
-                        <span className="text-sm-border" aria-hidden="true">·</span>
-                        <span className="truncate">{event.location}</span>
+                        <span className="text-sm-border" aria-hidden="true">
+                          ·
+                        </span>
+                        <span className="tabular">{time}</span>
                       </>
                     )}
                   </div>
