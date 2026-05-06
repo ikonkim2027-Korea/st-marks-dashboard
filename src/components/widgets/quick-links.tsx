@@ -1,109 +1,46 @@
 "use client";
 
-import {
-  BookOpen,
-  GraduationCap,
-  ShoppingBag,
-  CalendarDays,
-  Heart,
-  Utensils,
-  Users,
-  MapPin,
-  FileText,
-  Mail,
-  Globe2,
-  BookMarked,
-  PartyPopper,
-  School,
-  Shield,
-  ArrowUpRight,
-  HeartHandshake,
-  Bus,
-  Phone,
-  Cross,
-  HelpCircle,
-  Music,
-  Trophy,
-  Image as ImageIcon,
-  PenTool,
-  Stethoscope,
-  Languages,
-  Lock,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { resolveLinkIcon } from "@/lib/link-icons";
 import { WidgetShell } from "./widget-shell";
 
 interface LinkItem {
+  id: string;
   name: string;
   url: string;
-  icon: React.ReactNode;
-  category: string;
+  icon: string;
   hint?: string;
 }
 
-const ICON = "h-4 w-4";
-
-const links: LinkItem[] = [
-  // Academic
-  { name: "Canvas LMS", url: "https://stmarksschool.instructure.com", icon: <BookOpen className={ICON} />, category: "Academic", hint: "Coursework" },
-  { name: "Blackbaud Portal", url: "https://www.stmarksschool.org/login", icon: <Lock className={ICON} />, category: "Academic", hint: "Grades · forms" },
-  { name: "College Counseling", url: "https://www.stmarksschool.org/academics/college-counseling", icon: <GraduationCap className={ICON} />, category: "Academic" },
-  { name: "Library", url: "https://www.stmarksschool.org/academics/library", icon: <BookMarked className={ICON} />, category: "Academic" },
-  { name: "Academic Support", url: "https://www.stmarksschool.org/academics/learning-services", icon: <PenTool className={ICON} />, category: "Academic", hint: "Learning services" },
-  { name: "Course Catalog", url: "https://www.stmarksschool.org/academics/curriculum", icon: <FileText className={ICON} />, category: "Academic" },
-
-  // Campus Life
-  { name: "Orah Sign-Out", url: "https://www.stmarksschool.org/community/residential-life/orah", icon: <MapPin className={ICON} />, category: "Campus" },
-  { name: "FLIK Dining", url: "https://sms.flikisdining.com/", icon: <Utensils className={ICON} />, category: "Campus" },
-  { name: "Weekend Activities", url: "https://www.stmarksschool.org/community/student-life/weekend-activities", icon: <PartyPopper className={ICON} />, category: "Campus" },
-  { name: "Student Handbook", url: "https://www.stmarksschool.org/community/student-life/student-handbook", icon: <FileText className={ICON} />, category: "Campus" },
-  { name: "Residential Life", url: "https://www.stmarksschool.org/community/residential-life", icon: <School className={ICON} />, category: "Campus" },
-  { name: "Chapel", url: "https://www.stmarksschool.org/community/student-life/chapel", icon: <Cross className={ICON} />, category: "Campus" },
-
-  // Health & Wellness
-  { name: "Health Services", url: "https://www.stmarksschool.org/community/health-services-and-wellness/health-and-counseling-services", icon: <Stethoscope className={ICON} />, category: "Health" },
-  { name: "Counseling", url: "https://www.stmarksschool.org/community/health-services-and-wellness/health-and-counseling-services", icon: <Heart className={ICON} />, category: "Health" },
-  { name: "Crisis Text Line", url: "sms:741741?body=HOME", icon: <Phone className={ICON} />, category: "Health", hint: "Text HOME to 741741" },
-  { name: "988 Lifeline", url: "tel:988", icon: <HeartHandshake className={ICON} />, category: "Health", hint: "Call or text 988" },
-
-  // International
-  { name: "International Students", url: "https://www.stmarksschool.org/admission/international-students", icon: <Globe2 className={ICON} />, category: "International" },
-  { name: "Google Translate", url: "https://translate.google.com", icon: <Languages className={ICON} />, category: "International" },
-  { name: "Boston Consulates", url: "https://www.state.gov/foreign-consular-offices-in-the-united-states/", icon: <Globe2 className={ICON} />, category: "International", hint: "Find your consulate" },
-  { name: "Logan Airport", url: "https://www.massport.com/logan-airport/", icon: <Globe2 className={ICON} />, category: "International" },
-
-  // Transportation
-  { name: "MBTA Worcester Line", url: "https://www.mbta.com/schedules/CR-Worcester", icon: <Bus className={ICON} />, category: "Transit" },
-  { name: "Uber", url: "https://m.uber.com/", icon: <Bus className={ICON} />, category: "Transit" },
-  { name: "Lyft", url: "https://ride.lyft.com/", icon: <Bus className={ICON} />, category: "Transit" },
-  { name: "Hourly Weather", url: "https://forecast.weather.gov/MapClick.php?lat=42.3056&lon=-71.5245", icon: <Globe2 className={ICON} />, category: "Transit" },
-
-  // Resources
-  { name: "Gmail", url: "https://mail.google.com/a/stmarksschool.org", icon: <Mail className={ICON} />, category: "Resources" },
-  { name: "Google Drive", url: "https://drive.google.com/a/stmarksschool.org", icon: <FileText className={ICON} />, category: "Resources" },
-  { name: "School Store", url: "https://www.stmarksschool.org/community/school-store", icon: <ShoppingBag className={ICON} />, category: "Resources" },
-  { name: "SmugMug Photos", url: "https://stmarkslions.smugmug.com/", icon: <ImageIcon className={ICON} />, category: "Resources" },
-  { name: "Athletics Page", url: "https://www.stmarksschool.org/athletics", icon: <Trophy className={ICON} />, category: "Resources" },
-  { name: "Performing Arts", url: "https://www.stmarksschool.org/academics/arts", icon: <Music className={ICON} />, category: "Resources" },
-
-  // Tools & Contacts
-  { name: "School Calendar", url: "https://www.stmarksschool.org/about/calendar", icon: <CalendarDays className={ICON} />, category: "Tools" },
-  { name: "Parent Portal", url: "https://www.stmarksschool.org/parents", icon: <Users className={ICON} />, category: "Tools" },
-  { name: "Offices & Depts", url: "https://www.stmarksschool.org/about/offices-and-departments", icon: <Shield className={ICON} />, category: "Tools" },
-  { name: "IT Help Desk", url: "mailto:helpdesk@stmarksschool.org", icon: <HelpCircle className={ICON} />, category: "Tools", hint: "Tech support" },
-  { name: "Main Office", url: "tel:5087866000", icon: <Phone className={ICON} />, category: "Tools", hint: "508.786.6000" },
-];
-
-const CATEGORIES = [
-  "Academic",
-  "Campus",
-  "Health",
-  "International",
-  "Transit",
-  "Resources",
-  "Tools",
-];
+interface LinkCategory {
+  id: string;
+  label: string;
+  links: LinkItem[];
+}
 
 export function QuickLinksWidget() {
+  const [categories, setCategories] = useState<LinkCategory[] | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/links");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = (await res.json()) as { categories: LinkCategory[] };
+        if (!cancelled) setCategories(data.categories || []);
+      } catch {
+        if (!cancelled) setError(true);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <WidgetShell
       title="Quick Links"
@@ -112,12 +49,28 @@ export function QuickLinksWidget() {
       href="https://www.stmarksschool.org"
       hrefLabel="Website"
     >
-      <div className="grid grid-cols-2 gap-x-3 gap-y-4 pt-1 sm:gap-x-4">
-        {CATEGORIES.map((cat) => {
-          const catLinks = links.filter((l) => l.category === cat);
-          if (catLinks.length === 0) return null;
-          return (
-            <section key={cat} className="min-w-0" aria-label={cat}>
+      {error ? (
+        <p className="text-xs text-sm-text-muted">
+          Couldn&apos;t load links.
+        </p>
+      ) : categories === null ? (
+        <div className="grid grid-cols-2 gap-x-3 gap-y-4 pt-1 sm:gap-x-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="space-y-2">
+              <div className="h-3 w-16 animate-pulse rounded bg-sm-cream" />
+              {[1, 2, 3].map((j) => (
+                <div
+                  key={j}
+                  className="h-3 w-3/4 animate-pulse rounded bg-sm-cream"
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-x-3 gap-y-4 pt-1 sm:gap-x-4">
+          {categories.map((cat) => (
+            <section key={cat.id} className="min-w-0" aria-label={cat.label}>
               <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-sm-border/60">
                 <span
                   className="text-[9px] font-bold text-sm-gold"
@@ -126,14 +79,15 @@ export function QuickLinksWidget() {
                   ●
                 </span>
                 <h4 className="text-[9px] font-bold text-sm-navy uppercase tracking-[0.2em] truncate">
-                  {cat}
+                  {cat.label}
                 </h4>
               </div>
               <ul className="space-y-0.5">
-                {catLinks.map((link) => {
+                {cat.links.map((link) => {
+                  const Icon = resolveLinkIcon(link.icon);
                   const isExternal = link.url.startsWith("http");
                   return (
-                    <li key={link.name} className="min-w-0">
+                    <li key={link.id} className="min-w-0">
                       <a
                         href={link.url}
                         target={isExternal ? "_blank" : undefined}
@@ -151,7 +105,7 @@ export function QuickLinksWidget() {
                           className="shrink-0 text-sm-text-muted group-hover:text-sm-navy transition-colors"
                           aria-hidden="true"
                         >
-                          {link.icon}
+                          <Icon className="h-4 w-4" />
                         </span>
                         <span className="min-w-0 flex-1 truncate text-[11px] font-medium">
                           {link.name}
@@ -168,9 +122,9 @@ export function QuickLinksWidget() {
                 })}
               </ul>
             </section>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </WidgetShell>
   );
 }

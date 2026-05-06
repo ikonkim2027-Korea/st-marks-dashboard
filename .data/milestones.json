@@ -1,0 +1,11 @@
+{
+  "_comment": "Countdown widget milestones. Edit via /admin/countdown — that is the source of truth. Each entry: { id, label, date (YYYY-MM-DD), emoji? }. Past dates are filtered out automatically.",
+  "updated": "2026-05-06",
+  "milestones": [
+    { "id": "last-day-2026", "label": "Last Day of Classes", "date": "2026-05-22", "emoji": "📚" },
+    { "id": "commencement-2026", "label": "Commencement", "date": "2026-05-31", "emoji": "🎓" },
+    { "id": "thanksgiving-2026", "label": "Thanksgiving Break", "date": "2026-11-25", "emoji": "🦃" },
+    { "id": "winter-break-2026", "label": "Winter Break", "date": "2026-12-19", "emoji": "❄" },
+    { "id": "spring-break-2027", "label": "Spring Break 2027", "date": "2027-03-06", "emoji": "🌸" }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "_comment": "Quick Links widget data. Edit via /admin/links. Icon names map to lucide-react components — see src/lib/link-icons.ts for the supported set.",
+  "updated": "2026-05-06",
+  "categories": [
+    {
+      "id": "academic",
+      "label": "Academic",
+      "links": [
+        { "id": "canvas", "name": "Canvas LMS", "url": "https://stmarksschool.instructure.com", "icon": "BookOpen", "hint": "Coursework" },
+        { "id": "blackbaud", "name": "Blackbaud Portal", "url": "https://www.stmarksschool.org/login", "icon": "Lock", "hint": "Grades · forms" },
+        { "id": "college-counseling", "name": "College Counseling", "url": "https://www.stmarksschool.org/academics/college-counseling", "icon": "GraduationCap" },
+        { "id": "library", "name": "Library", "url": "https://www.stmarksschool.org/academics/library", "icon": "BookMarked" },
+        { "id": "academic-support", "name": "Academic Support", "url": "https://www.stmarksschool.org/academics/learning-services", "icon": "PenTool", "hint": "Learning services" },
+        { "id": "course-catalog", "name": "Course Catalog", "url": "https://www.stmarksschool.org/academics/curriculum", "icon": "FileText" }
+      ]
+    },
+    {
+      "id": "campus",
+      "label": "Campus",
+      "links": [
+        { "id": "orah", "name": "Orah Sign-Out", "url": "https://www.stmarksschool.org/community/residential-life/orah", "icon": "MapPin" },
+        { "id": "flik", "name": "FLIK Dining", "url": "https://sms.flikisdining.com/", "icon": "Utensils" },
+        { "id": "weekend", "name": "Weekend Activities", "url": "https://www.stmarksschool.org/community/student-life/weekend-activities", "icon": "PartyPopper" },
+        { "id": "handbook", "name": "Student Handbook", "url": "https://www.stmarksschool.org/community/student-life/student-handbook", "icon": "FileText" },
+        { "id": "residential", "name": "Residential Life", "url": "https://www.stmarksschool.org/community/residential-life", "icon": "School" },
+        { "id": "chapel", "name": "Chapel", "url": "https://www.stmarksschool.org/community/student-life/chapel", "icon": "Cross" }
+      ]
+    },
+    {
+      "id": "health",
+      "label": "Health",
+      "links": [
+        { "id": "health-services", "name": "Health Services", "url": "https://www.stmarksschool.org/community/health-services-and-wellness/health-and-counseling-services", "icon": "Stethoscope" },
+        { "id": "counseling", "name": "Counseling", "url": "https://www.stmarksschool.org/community/health-services-and-wellness/health-and-counseling-services", "icon": "Heart" },
+        { "id": "crisis-text", "name": "Crisis Text Line", "url": "sms:741741?body=HOME", "icon": "Phone", "hint": "Text HOME to 741741" },
+        { "id": "988", "name": "988 Lifeline", "url": "tel:988", "icon": "HeartHandshake", "hint": "Call or text 988" }
+      ]
+    },
+    {
+      "id": "international",
+      "label": "International",
+      "links": [
+        { "id": "intl-students", "name": "International Students", "url": "https://www.stmarksschool.org/admission/international-students", "icon": "Globe2" },
+        { "id": "translate", "name": "Google Translate", "url": "https://translate.google.com", "icon": "Languages" },
+        { "id": "consulates", "name": "Boston Consulates", "url": "https://www.state.gov/foreign-consular-offices-in-the-united-states/", "icon": "Globe2", "hint": "Find your consulate" },
+        { "id": "logan", "name": "Logan Airport", "url": "https://www.massport.com/logan-airport/", "icon": "Globe2" }
+      ]
+    },
+    {
+      "id": "transit",
+      "label": "Transit",
+      "links": [
+        { "id": "mbta", "name": "MBTA Worcester Line", "url": "https://www.mbta.com/schedules/CR-Worcester", "icon": "Bus" },
+        { "id": "uber", "name": "Uber", "url": "https://m.uber.com/", "icon": "Bus" },
+        { "id": "lyft", "name": "Lyft", "url": "https://ride.lyft.com/", "icon": "Bus" },
+        { "id": "weather-hourly", "name": "Hourly Weather", "url": "https://forecast.weather.gov/MapClick.php?lat=42.3056&lon=-71.5245", "icon": "Globe2" }
+      ]
+    },
+    {
+      "id": "resources",
+      "label": "Resources",
+      "links": [
+        { "id": "gmail", "name": "Gmail", "url": "https://mail.google.com/a/stmarksschool.org", "icon": "Mail" },
+        { "id": "drive", "name": "Google Drive", "url": "https://drive.google.com/a/stmarksschool.org", "icon": "FileText" },
+        { "id": "store", "name": "School Store", "url": "https://www.stmarksschool.org/community/school-store", "icon": "ShoppingBag" },
+        { "id": "smugmug", "name": "SmugMug Photos", "url": "https://stmarkslions.smugmug.com/", "icon": "ImageIcon" },
+        { "id": "athletics-page", "name": "Athletics Page", "url": "https://www.stmarksschool.org/athletics", "icon": "Trophy" },
+        { "id": "arts", "name": "Performing Arts", "url": "https://www.stmarksschool.org/academics/arts", "icon": "Music" }
+      ]
+    },
+    {
+      "id": "tools",
+      "label": "Tools",
+      "links": [
+        { "id": "calendar", "name": "School Calendar", "url": "https://www.stmarksschool.org/about/calendar", "icon": "CalendarDays" },
+        { "id": "parent", "name": "Parent Portal", "url": "https://www.stmarksschool.org/parents", "icon": "Users" },
+        { "id": "offices", "name": "Offices & Depts", "url": "https://www.stmarksschool.org/about/offices-and-departments", "icon": "Shield" },
+        { "id": "it", "name": "IT Help Desk", "url": "mailto:helpdesk@stmarksschool.org", "icon": "HelpCircle", "hint": "Tech support" },
+        { "id": "main-office", "name": "Main Office", "url": "tel:5087866000", "icon": "Phone", "hint": "508.786.6000" }
+      ]
+    }
+  ]
+}

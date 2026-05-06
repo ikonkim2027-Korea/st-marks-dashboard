@@ -1,22 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNow } from "@/lib/now";
 import { WidgetShell } from "./widget-shell";
 
 interface Milestone {
+  id: string;
   label: string;
   date: string;
   emoji?: string;
 }
-
-const MILESTONES: Milestone[] = [
-  { label: "Last Day of Classes", date: "2026-05-22", emoji: "📚" },
-  { label: "Commencement", date: "2026-05-31", emoji: "🎓" },
-  { label: "Thanksgiving Break", date: "2026-11-25", emoji: "🦃" },
-  { label: "Winter Break", date: "2026-12-19", emoji: "❄" },
-  { label: "Spring Break 2027", date: "2027-03-06", emoji: "🌸" },
-];
 
 function daysBetween(a: Date, b: Date): number {
   const ms = b.setHours(0, 0, 0, 0) - a.setHours(0, 0, 0, 0);
@@ -34,18 +27,39 @@ function fmt(d: Date): string {
 
 export function CountdownWidget() {
   const now = useNow(60_000 * 5);
+  const [milestones, setMilestones] = useState<Milestone[] | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/milestones");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = (await res.json()) as { milestones: Milestone[] };
+        if (!cancelled) setMilestones(data.milestones || []);
+      } catch {
+        if (!cancelled) setError(true);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const upcoming = useMemo(() => {
-    if (!now) return [];
-    return MILESTONES.map((m) => {
-      const target = new Date(m.date + "T00:00:00");
-      return { ...m, target, days: daysBetween(new Date(now), target) };
-    })
+    if (!now || !milestones) return [];
+    return milestones
+      .map((m) => {
+        const target = new Date(m.date + "T00:00:00");
+        return { ...m, target, days: daysBetween(new Date(now), target) };
+      })
       .filter((m) => m.days >= 0)
       .sort((a, b) => a.days - b.days);
-  }, [now]);
+  }, [now, milestones]);
 
-  if (!now) {
+  if (!now || milestones === null) {
     return (
       <WidgetShell title="Countdown" eyebrow="MILESTONES" accent="orange">
         <div role="status" aria-label="Loading countdown" className="space-y-2">
@@ -56,11 +70,13 @@ export function CountdownWidget() {
     );
   }
 
-  if (upcoming.length === 0) {
+  if (error || upcoming.length === 0) {
     return (
       <WidgetShell title="Countdown" eyebrow="MILESTONES" accent="orange">
         <p className="text-[11px] text-sm-text-muted">
-          No milestones in the calendar yet.
+          {error
+            ? "Couldn't load milestones."
+            : "No milestones in the calendar yet."}
         </p>
       </WidgetShell>
     );
@@ -97,10 +113,13 @@ export function CountdownWidget() {
           </p>
         </div>
 
-        <ul className="flex-1 mt-3 space-y-1.5 overflow-y-auto min-h-0" aria-label="Upcoming milestones">
+        <ul
+          className="flex-1 mt-3 space-y-1.5 overflow-y-auto min-h-0"
+          aria-label="Upcoming milestones"
+        >
           {rest.slice(0, 5).map((m) => (
             <li
-              key={m.label}
+              key={m.id}
               className="flex items-center justify-between text-[11px]"
             >
               <span className="text-sm-text truncate flex-1">
