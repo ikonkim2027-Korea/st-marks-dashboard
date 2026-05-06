@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { resolveLinkIcon } from "@/lib/link-icons";
 
 interface LinkItem {
@@ -34,6 +34,14 @@ function flatten(categories: LinkCategory[]): FlatLink[] {
 
 export function QuickLinksBar() {
   const [links, setLinks] = useState<FlatLink[] | null>(null);
+  const railRef = useRef<HTMLUListElement | null>(null);
+  const dragRef = useRef({
+    active: false,
+    moved: false,
+    pointerId: -1,
+    startX: 0,
+    startScrollLeft: 0,
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -50,6 +58,56 @@ export function QuickLinksBar() {
     };
   }, []);
 
+  function handlePointerDown(event: React.PointerEvent<HTMLUListElement>) {
+    if (event.button !== 0) return;
+
+    const rail = railRef.current;
+    if (!rail) return;
+
+    dragRef.current = {
+      active: true,
+      moved: false,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: rail.scrollLeft,
+    };
+    rail.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLUListElement>) {
+    const drag = dragRef.current;
+    const rail = railRef.current;
+    if (!drag.active || drag.pointerId !== event.pointerId || !rail) return;
+
+    const deltaX = event.clientX - drag.startX;
+    if (Math.abs(deltaX) > 4) {
+      drag.moved = true;
+    }
+
+    if (drag.moved) {
+      event.preventDefault();
+      rail.scrollLeft = drag.startScrollLeft - deltaX;
+    }
+  }
+
+  function handlePointerEnd(event: React.PointerEvent<HTMLUListElement>) {
+    const rail = railRef.current;
+    const drag = dragRef.current;
+    if (rail?.hasPointerCapture(event.pointerId)) {
+      rail.releasePointerCapture(event.pointerId);
+    }
+
+    drag.active = false;
+  }
+
+  function handleClickCapture(event: React.MouseEvent<HTMLUListElement>) {
+    if (!dragRef.current.moved) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragRef.current.moved = false;
+  }
+
   return (
     <nav
       aria-label="Quick links"
@@ -57,8 +115,14 @@ export function QuickLinksBar() {
     >
       <div className="mx-auto max-w-full px-4 sm:px-6 xl:px-10">
         <ul
-          className="-mx-1 flex items-start gap-1 overflow-x-auto px-1 py-2 [scrollbar-width:thin]"
+          ref={railRef}
+          className="-mx-1 flex cursor-grab touch-pan-y select-none items-start gap-1 overflow-x-auto px-1 py-2 active:cursor-grabbing [scrollbar-width:thin]"
           role="list"
+          onClickCapture={handleClickCapture}
+          onPointerCancel={handlePointerEnd}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
         >
           {links === null
             ? Array.from({ length: 10 }).map((_, i) => (
