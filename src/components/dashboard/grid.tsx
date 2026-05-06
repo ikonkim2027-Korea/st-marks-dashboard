@@ -11,7 +11,6 @@ import { AthleticsWidget } from "@/components/widgets/athletics";
 import { NewsWidget } from "@/components/widgets/news";
 import { CalendarWidget } from "@/components/widgets/calendar";
 import { InstagramWidget } from "@/components/widgets/instagram";
-import { QuickLinksWidget } from "@/components/widgets/quick-links";
 import { NotesWidget } from "@/components/widgets/notes";
 import { CountdownWidget } from "@/components/widgets/countdown";
 import { HighlightWidget } from "@/components/widgets/highlight";
@@ -22,7 +21,6 @@ export type WidgetKey =
   | "news"
   | "calendar"
   | "instagram"
-  | "quick-links"
   | "notes"
   | "countdown"
   | "highlight";
@@ -33,7 +31,6 @@ const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
   news: () => <NewsWidget />,
   calendar: () => <CalendarWidget />,
   instagram: () => <InstagramWidget />,
-  "quick-links": () => <QuickLinksWidget />,
   notes: () => <NotesWidget />,
   countdown: () => <CountdownWidget />,
   highlight: () => <HighlightWidget />,
@@ -48,7 +45,6 @@ const DEFAULT_ORDER: WidgetKey[] = [
   "notes",
   "highlight",
   "instagram",
-  "quick-links",
 ];
 
 const ALL_KEYS = new Set<WidgetKey>(DEFAULT_ORDER);
@@ -56,7 +52,6 @@ const ALL_KEYS = new Set<WidgetKey>(DEFAULT_ORDER);
 const ANCHOR_IDS: Partial<Record<WidgetKey, string>> = {
   athletics: "athletics",
   calendar: "calendar",
-  "quick-links": "links",
 };
 
 const STORAGE_KEY = "stmarks-order-v1";

@@ -8,7 +8,6 @@ const navLinks = [
   { name: "Dashboard", href: "#" },
   { name: "Athletics", href: "#athletics" },
   { name: "Calendar", href: "#calendar" },
-  { name: "Links", href: "#links" },
 ];
 
 export function DashboardHeader() {

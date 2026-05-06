@@ -41,11 +41,11 @@ body {
   background: var(--sm-offwhite);
   color: var(--sm-text);
   font-family: var(--font-sans), "Montserrat", system-ui, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Scrollbar */

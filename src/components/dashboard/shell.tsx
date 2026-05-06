@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { DashboardHeader } from "./header";
 import { HeroBanner } from "./hero-banner";
+import { QuickLinksBar } from "./quick-links-bar";
 import { DashboardGrid } from "./grid";
 
 /**
@@ -18,6 +19,7 @@ export function DashboardShell() {
       <DashboardHeader />
       <main className="flex-1">
         <HeroBanner />
+        <QuickLinksBar />
         <DashboardGrid />
       </main>
       <DashboardFooter />
