@@ -108,6 +108,10 @@ export function QuickLinksBar() {
     dragRef.current.moved = false;
   }
 
+  function preventNativeDrag(event: React.DragEvent<HTMLUListElement>) {
+    event.preventDefault();
+  }
+
   return (
     <nav
       aria-label="Quick links"
@@ -119,6 +123,7 @@ export function QuickLinksBar() {
           className="-mx-1 flex cursor-grab touch-pan-y select-none items-start gap-1 overflow-x-auto px-1 py-2 active:cursor-grabbing [scrollbar-width:thin]"
           role="list"
           onClickCapture={handleClickCapture}
+          onDragStart={preventNativeDrag}
           onPointerCancel={handlePointerEnd}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -140,6 +145,7 @@ export function QuickLinksBar() {
                   <li key={`${link.categoryId}-${link.id}`} className="shrink-0">
                     <a
                       href={link.url}
+                      draggable={false}
                       target={isExternal ? "_blank" : undefined}
                       rel={isExternal ? "noopener noreferrer" : undefined}
                       title={
@@ -150,15 +156,15 @@ export function QuickLinksBar() {
                           ? `${link.name} — ${link.category} (opens in new tab)`
                           : `${link.name} — ${link.category}`
                       }
-                      className="focus-ring group flex w-[88px] flex-col items-center gap-1.5 rounded-xl px-1 py-1 transition-colors hover:bg-sm-cream/50"
+                      className="focus-ring group flex w-[88px] touch-pan-y select-none flex-col items-center gap-1.5 rounded-xl px-1 py-1 transition-colors hover:bg-sm-cream/50 [-webkit-user-drag:none]"
                     >
                       <span
-                        className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sm-navy/5 text-sm-navy ring-1 ring-inset ring-sm-navy/10 transition-all group-hover:bg-sm-navy group-hover:text-white group-hover:ring-sm-navy group-active:scale-95"
+                        className="pointer-events-none flex h-11 w-11 items-center justify-center rounded-2xl bg-sm-navy/5 text-sm-navy ring-1 ring-inset ring-sm-navy/10 transition-all group-hover:bg-sm-navy group-hover:text-white group-hover:ring-sm-navy group-active:scale-95"
                         aria-hidden="true"
                       >
                         <Icon className="h-5 w-5" strokeWidth={1.75} />
                       </span>
-                      <span className="line-clamp-2 min-h-[24px] w-full break-words text-center text-[10px] font-medium leading-[1.2] text-sm-text-light group-hover:text-sm-navy">
+                      <span className="pointer-events-none line-clamp-2 min-h-[24px] w-full break-words text-center text-[10px] font-medium leading-[1.2] text-sm-text-light group-hover:text-sm-navy">
                         {link.name}
                       </span>
                     </a>
