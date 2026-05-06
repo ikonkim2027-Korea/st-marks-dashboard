@@ -77,43 +77,49 @@ export function HighlightWidget() {
   const word = WORDS[idx % WORDS.length];
 
   return (
-    <WidgetShell title="Highlight" eyebrow="DAILY" accent="gold">
-      <div className="flex h-full flex-col">
-        <div className="mb-4 pb-4 border-b border-sm-border/60">
-          <div className="flex items-center gap-1.5 mb-2">
-            <Sparkles className="h-3 w-3 text-sm-gold" aria-hidden="true" />
+    <WidgetShell
+      title="Highlight"
+      eyebrow="DAILY"
+      accent="gold"
+      bodyClassName="pb-3 sm:pb-4"
+      scrollable={false}
+    >
+      <div className="grid h-full min-h-0 grid-rows-[auto_1fr] gap-3">
+        <section className="rounded-[8px] border border-sm-gold/20 bg-sm-cream/45 px-3 py-3">
+          <div className="mb-2 flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-sm-gold" aria-hidden="true" />
             <span className="label-micro text-sm-gold">Word of the Day</span>
           </div>
-          <div className="flex items-baseline gap-2 mb-1">
-            <h4 className="text-lg font-bold text-sm-text tracking-tight">
+          <div className="mb-1 flex items-baseline gap-2">
+            <h4 className="text-[22px] font-bold leading-none tracking-tight text-sm-text">
               {word.word}
             </h4>
-            <span className="text-[10px] italic text-sm-text-muted">
+            <span className="text-[11px] italic text-sm-text-muted">
               {word.pos}
             </span>
           </div>
-          <p className="text-[12px] text-sm-text leading-snug mb-1.5">
+          <p className="mb-1.5 text-[13px] leading-snug text-sm-text">
             {word.definition}
           </p>
-          <p className="text-[10px] text-sm-text-muted italic leading-snug">
+          <p className="text-[11px] italic leading-snug text-sm-text-muted">
             “{word.example}”
           </p>
-        </div>
+        </section>
 
-        <div className="flex-1 flex flex-col">
-          <div className="flex items-center gap-1.5 mb-2">
-            <Quote className="h-3 w-3 text-sm-navy" aria-hidden="true" />
+        <section className="flex min-h-0 flex-col rounded-[8px] border border-sm-navy/10 px-3 py-3">
+          <div className="mb-3 flex items-center gap-1.5">
+            <Quote className="h-3.5 w-3.5 text-sm-navy" aria-hidden="true" />
             <span className="label-micro">Daily Quote</span>
           </div>
-          <blockquote className="flex-1 flex flex-col justify-center">
-            <p className="text-[13px] font-medium text-sm-text leading-relaxed mb-2">
+          <blockquote className="flex min-h-0 flex-1 flex-col justify-between gap-3">
+            <p className="text-[15px] font-medium leading-relaxed text-sm-text">
               {quote.text}
             </p>
-            <footer className="text-[10px] text-sm-text-muted tracking-[0.15em] uppercase">
+            <footer className="text-[10px] uppercase tracking-[0.15em] text-sm-text-muted">
               — {quote.by}
             </footer>
           </blockquote>
-        </div>
+        </section>
       </div>
     </WidgetShell>
   );
