@@ -12,13 +12,11 @@ import { NewsWidget } from "@/components/widgets/news";
 import { CalendarWidget } from "@/components/widgets/calendar";
 import { InstagramWidget } from "@/components/widgets/instagram";
 import { QuickLinksWidget } from "@/components/widgets/quick-links";
-import { TodayScheduleWidget } from "@/components/widgets/today-schedule";
 import { NotesWidget } from "@/components/widgets/notes";
 import { CountdownWidget } from "@/components/widgets/countdown";
 import { HighlightWidget } from "@/components/widgets/highlight";
 
 export type WidgetKey =
-  | "schedule"
   | "lunch"
   | "athletics"
   | "news"
@@ -30,7 +28,6 @@ export type WidgetKey =
   | "highlight";
 
 const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
-  schedule: () => <TodayScheduleWidget />,
   lunch: () => <LunchWidget />,
   athletics: () => <AthleticsWidget />,
   news: () => <NewsWidget />,
@@ -43,7 +40,6 @@ const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
 };
 
 const DEFAULT_ORDER: WidgetKey[] = [
-  "schedule",
   "lunch",
   "news",
   "athletics",
@@ -57,11 +53,7 @@ const DEFAULT_ORDER: WidgetKey[] = [
 
 const ALL_KEYS = new Set<WidgetKey>(DEFAULT_ORDER);
 
-// Map nav hash targets to the widget cell that should own each id.
-// Preserves the `#schedule`, `#athletics`, `#calendar`, `#links` anchors
-// referenced by `DashboardHeader`.
 const ANCHOR_IDS: Partial<Record<WidgetKey, string>> = {
-  schedule: "schedule",
   athletics: "athletics",
   calendar: "calendar",
   "quick-links": "links",

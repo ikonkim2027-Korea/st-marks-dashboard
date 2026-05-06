@@ -13,6 +13,9 @@ interface ApiNewsItem {
   imageUrl: string | null;
 }
 
+const MAX_ITEMS = 5;
+const NEWS_HREF = "https://www.stmarksschool.org/about/news-and-stories";
+
 function formatDate(iso: string): string {
   if (!iso) return "";
   const d = new Date(iso);
@@ -22,8 +25,6 @@ function formatDate(iso: string): string {
   const year = d.getFullYear().toString().slice(-2);
   return `${day} ${month} ${year}`;
 }
-
-const NEWS_HREF = "https://www.stmarksschool.org/about/news-and-stories";
 
 export function NewsWidget() {
   const [news, setNews] = useState<ApiNewsItem[] | null>(null);
@@ -57,9 +58,17 @@ export function NewsWidget() {
         href={NEWS_HREF}
         hrefLabel="All"
       >
-        <div className="flex h-full flex-col items-center justify-center text-center" role="alert">
-          <AlertCircle className="h-5 w-5 text-sm-danger mb-2" aria-hidden="true" />
-          <p className="text-xs font-semibold text-sm-text mb-1">Couldn’t load news</p>
+        <div
+          className="flex h-full flex-col items-center justify-center text-center"
+          role="alert"
+        >
+          <AlertCircle
+            className="h-5 w-5 text-sm-danger mb-2"
+            aria-hidden="true"
+          />
+          <p className="text-xs font-semibold text-sm-text mb-1">
+            Couldn’t load news
+          </p>
           <p className="text-[11px] text-sm-text-muted leading-relaxed max-w-[240px]">
             Try refreshing the page or check your connection.
           </p>
@@ -86,16 +95,17 @@ export function NewsWidget() {
         href={NEWS_HREF}
         hrefLabel="All"
       >
-        <div role="status" aria-label="Loading news">
-          <div className="aspect-[16/9] w-full animate-pulse rounded bg-sm-cream mb-4" />
-          <div className="h-2 w-16 animate-pulse rounded bg-sm-cream mb-2" />
-          <div className="h-3 w-4/5 animate-pulse rounded bg-sm-cream mb-4" />
-          <div className="border-t border-sm-border/60 pt-4 space-y-2.5">
-            <div className="h-2 w-10 animate-pulse rounded bg-sm-cream" />
-            <div className="h-3 w-3/4 animate-pulse rounded bg-sm-cream" />
-            <div className="h-2 w-10 animate-pulse rounded bg-sm-cream" />
-            <div className="h-3 w-2/3 animate-pulse rounded bg-sm-cream" />
-          </div>
+        <div role="status" aria-label="Loading news" className="space-y-2.5">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className="h-14 w-14 shrink-0 animate-pulse rounded-md bg-sm-cream" />
+              <div className="min-w-0 flex-1 space-y-1.5">
+                <div className="h-2 w-12 animate-pulse rounded bg-sm-cream" />
+                <div className="h-3 w-4/5 animate-pulse rounded bg-sm-cream" />
+                <div className="h-3 w-3/5 animate-pulse rounded bg-sm-cream" />
+              </div>
+            </div>
+          ))}
           <span className="sr-only">Loading news…</span>
         </div>
       </WidgetShell>
@@ -112,15 +122,20 @@ export function NewsWidget() {
         hrefLabel="All"
       >
         <div className="flex h-full flex-col items-center justify-center text-center">
-          <Newspaper className="h-7 w-7 text-sm-text-muted/60 mb-2" aria-hidden="true" />
+          <Newspaper
+            className="h-7 w-7 text-sm-text-muted/60 mb-2"
+            aria-hidden="true"
+          />
           <p className="text-sm font-semibold text-sm-text">No stories yet</p>
-          <p className="text-[11px] text-sm-text-muted mt-1">Fresh St. Mark’s news will show up here.</p>
+          <p className="text-[11px] text-sm-text-muted mt-1">
+            Fresh St. Mark’s news will show up here.
+          </p>
         </div>
       </WidgetShell>
     );
   }
 
-  const [featured, ...rest] = news;
+  const items = news.slice(0, MAX_ITEMS);
 
   return (
     <WidgetShell
@@ -130,62 +145,47 @@ export function NewsWidget() {
       href={NEWS_HREF}
       hrefLabel="All"
     >
-      <div className="flex h-full flex-col">
-        {/* Featured */}
-        <a
-          href={featured.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="focus-ring block group rounded-sm"
-          aria-label={`Featured: ${featured.title}`}
-        >
-          {featured.imageUrl && (
-            <div className="relative aspect-[16/9] overflow-hidden rounded-md mb-3">
-              <Image
-                src={featured.imageUrl}
-                alt=""
-                fill
-                unoptimized
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 1024px) 100vw, 33vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-sm-navy/40 via-transparent to-transparent" aria-hidden="true" />
-              <div className="absolute bottom-2 left-2">
-                <span className="inline-block px-2 py-0.5 bg-white/95 text-[9px] font-bold uppercase tracking-[0.15em] text-sm-navy rounded-sm">
-                  Featured
-                </span>
+      <ul className="-mr-1 flex h-full flex-col divide-y divide-sm-border/60 overflow-y-auto pr-1">
+        {items.map((item) => (
+          <li key={item.id} className="first:pt-0 last:pb-0">
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring group flex items-center gap-3 rounded-sm py-2.5"
+              aria-label={`${item.title} — ${formatDate(item.date)}`}
+            >
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-sm-cream">
+                {item.imageUrl ? (
+                  <Image
+                    src={item.imageUrl}
+                    alt=""
+                    fill
+                    unoptimized
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="56px"
+                  />
+                ) : (
+                  <div
+                    className="flex h-full w-full items-center justify-center text-sm-text-muted/50"
+                    aria-hidden="true"
+                  >
+                    <Newspaper className="h-5 w-5" />
+                  </div>
+                )}
               </div>
-            </div>
-          )}
-          <p className="label-micro tabular mb-1">
-            {formatDate(featured.date)}
-          </p>
-          <h4 className="text-sm font-bold text-sm-text leading-snug group-hover:text-sm-navy transition-colors">
-            {featured.title}
-          </h4>
-        </a>
-
-        {/* Rest — fills remaining vertical space */}
-        <ul className="mt-5 pt-4 border-t border-sm-border/60 space-y-2.5 flex-1 overflow-hidden">
-          {rest.map((item) => (
-            <li key={item.id}>
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="focus-ring block group border-l border-sm-border/80 hover:border-sm-gold pl-3 transition-colors rounded-sm"
-              >
-                <p className="text-[9px] text-sm-text-muted tracking-[0.12em] tabular mb-0.5">
+              <div className="min-w-0 flex-1">
+                <p className="label-micro tabular mb-0.5">
                   {formatDate(item.date)}
                 </p>
-                <h4 className="text-xs font-semibold text-sm-text leading-snug group-hover:text-sm-navy transition-colors line-clamp-2">
+                <h4 className="line-clamp-2 text-[13px] font-semibold leading-snug text-sm-text transition-colors group-hover:text-sm-navy">
                   {item.title}
                 </h4>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
     </WidgetShell>
   );
 }

@@ -79,7 +79,7 @@ export function NotesWidget() {
       headerExtra={headerExtra}
     >
       <div className="flex h-full flex-col">
-        <div className="flex items-center gap-2 mb-4 border-b border-sm-border pb-2">
+        <div className="flex items-center gap-2 mb-4 border-b border-sm-border pb-2 pt-1">
           <input
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
