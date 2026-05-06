@@ -2,7 +2,15 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { auth, signOut } from "@/auth";
 import { ADMIN_EMAILS } from "@/auth.config";
-import { LogOut, Utensils, Hourglass, LinkIcon } from "lucide-react";
+import { getStorageMode } from "@/lib/data-store";
+import {
+  LogOut,
+  Utensils,
+  Hourglass,
+  LinkIcon,
+  GitBranch,
+  Folder,
+} from "lucide-react";
 
 export const metadata = {
   title: "Admin · SM Hub",
@@ -94,17 +102,44 @@ export default async function AdminLayout({
               })}
             </ul>
           </nav>
-          <p className="mt-3 px-2 text-[10px] leading-relaxed text-sm-text-muted">
-            Edits save immediately to{" "}
-            <code className="rounded bg-sm-cream px-1 py-0.5 text-[9px]">
-              .data/*.json
-            </code>{" "}
-            and the public dashboard reads from the same files. Commit the
-            files to git when you want to publish.
-          </p>
+          <StorageBadge />
         </aside>
         <main className="flex-1 min-w-0">{children}</main>
       </div>
+    </div>
+  );
+}
+
+function StorageBadge() {
+  const mode = getStorageMode();
+  if (mode === "github") {
+    return (
+      <div className="mt-3 rounded-md border border-sm-border bg-white p-3 text-[10px] leading-relaxed text-sm-text-muted">
+        <p className="mb-1 inline-flex items-center gap-1.5 font-bold uppercase tracking-[0.15em] text-sm-navy">
+          <GitBranch className="h-3 w-3" aria-hidden="true" />
+          GitHub mode
+        </p>
+        <p>
+          Saves commit to the repo and trigger a Vercel redeploy. The
+          public site updates in <strong>~30s</strong>. The admin editor sees
+          the new value immediately.
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="mt-3 rounded-md border border-sm-border bg-white p-3 text-[10px] leading-relaxed text-sm-text-muted">
+      <p className="mb-1 inline-flex items-center gap-1.5 font-bold uppercase tracking-[0.15em] text-sm-navy">
+        <Folder className="h-3 w-3" aria-hidden="true" />
+        Local mode
+      </p>
+      <p>
+        Edits save to{" "}
+        <code className="rounded bg-sm-cream px-1 py-0.5 text-[9px]">
+          .data/*.json
+        </code>
+        . Commit + push to publish to the live site.
+      </p>
     </div>
   );
 }

@@ -4,16 +4,28 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 /**
- * Tiny filesystem-backed data store for the dashboard's editable JSON
- * (lunch menu, milestones, quick links). Reads/writes `<repo>/.data/<file>.json`
- * on the local filesystem — fine for `npm run dev` and self-hosted setups.
+ * Dual-mode JSON store for the dashboard's editable data
+ * (lunch menu, milestones, quick links).
  *
- * NOTE: serverless platforms like Vercel mount a read-only filesystem, so
- * the admin's "Save" buttons will fail there. If/when we deploy, swap this
- * for a KV store or commit-via-GitHub-API and only this file needs to change.
+ * - Local dev: read & write `<repo>/.data/<file>.json` on the filesystem.
+ *   Convenient for `npm run dev` — the same files the public widgets read.
+ *
+ * - Vercel / serverless: read from filesystem (the bundled deploy artifact),
+ *   write via the GitHub Contents API. Each save is a commit on the
+ *   configured branch which auto-triggers a Vercel redeploy. Public widgets
+ *   serve the freshly deployed JSON within ~30s; admin GETs go through the
+ *   GitHub API so the editor sees the just-saved value immediately without
+ *   waiting for the redeploy.
+ *
+ * Mode is selected by the presence of GITHUB_TOKEN. No code branches need
+ * to know which mode is active beyond this file.
  */
 
 const DATA_DIR = path.join(process.cwd(), ".data");
+const REPO = process.env.GITHUB_REPO; // "owner/name"
+const BRANCH = process.env.GITHUB_BRANCH ?? "main";
+const TOKEN = process.env.GITHUB_TOKEN;
+const USE_GITHUB = Boolean(REPO && TOKEN);
 
 export type LunchItem = { name: string; isVegetarian?: boolean };
 export type LunchDay = { diningHall: LunchItem[]; lionsDen: LunchItem[] };
@@ -50,7 +62,9 @@ export type LinksData = {
   categories: LinkCategory[];
 };
 
-async function readJson<T>(file: string, fallback: T): Promise<T> {
+// ---- filesystem layer -----------------------------------------------------
+
+async function readJsonFs<T>(file: string, fallback: T): Promise<T> {
   try {
     const raw = await fs.readFile(path.join(DATA_DIR, file), "utf8");
     return JSON.parse(raw) as T;
@@ -59,18 +73,129 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
   }
 }
 
-async function writeJson<T>(file: string, value: T): Promise<void> {
-  // Ensure dir exists; first-time writes on a fresh checkout would fail otherwise.
+async function writeJsonFs<T>(file: string, value: T): Promise<void> {
   await fs.mkdir(DATA_DIR, { recursive: true });
   const filePath = path.join(DATA_DIR, file);
-  // Pretty-printed JSON so diffs in `git log` stay readable.
   await fs.writeFile(filePath, JSON.stringify(value, null, 2) + "\n", "utf8");
+}
+
+// ---- GitHub Contents API layer -------------------------------------------
+
+interface GhFile {
+  content: string;
+  sha: string;
+}
+
+async function ghRead(filePath: string): Promise<GhFile | null> {
+  if (!REPO || !TOKEN) throw new Error("GitHub mode not configured");
+  const r = await fetch(
+    `https://api.github.com/repos/${REPO}/contents/${encodeURIComponent(filePath)}?ref=${BRANCH}`,
+    {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      cache: "no-store",
+    },
+  );
+  if (r.status === 404) return null;
+  if (!r.ok) {
+    const body = await r.text().catch(() => "");
+    throw new Error(`GitHub read ${r.status}: ${body.slice(0, 200)}`);
+  }
+  const data = (await r.json()) as { content: string; sha: string; encoding?: string };
+  // GitHub returns base64 with newlines; Buffer.from handles that fine.
+  const decoded = Buffer.from(data.content, "base64").toString("utf8");
+  return { content: decoded, sha: data.sha };
+}
+
+async function ghWrite(
+  filePath: string,
+  content: string,
+  message: string,
+): Promise<void> {
+  if (!REPO || !TOKEN) throw new Error("GitHub mode not configured");
+  // We need the current SHA to update an existing file; a missing SHA means
+  // we're creating it for the first time.
+  const existing = await ghRead(filePath);
+  const r = await fetch(
+    `https://api.github.com/repos/${REPO}/contents/${encodeURIComponent(filePath)}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message,
+        content: Buffer.from(content, "utf8").toString("base64"),
+        branch: BRANCH,
+        sha: existing?.sha,
+        committer: {
+          name: "SM Hub Admin",
+          email: "admin@stmarksschool.org",
+        },
+      }),
+    },
+  );
+  if (!r.ok) {
+    const body = await r.text().catch(() => "");
+    throw new Error(`GitHub write ${r.status}: ${body.slice(0, 200)}`);
+  }
+}
+
+// ---- shared read/write ----------------------------------------------------
+
+async function readFresh<T>(file: string, fallback: T): Promise<T> {
+  if (USE_GITHUB) {
+    try {
+      const f = await ghRead(`.data/${file}`);
+      if (!f) return fallback;
+      return JSON.parse(f.content) as T;
+    } catch {
+      // Fall back to filesystem so admin reads still surface the last
+      // deployed snapshot if the GitHub API hiccups.
+      return readJsonFs(file, fallback);
+    }
+  }
+  return readJsonFs(file, fallback);
+}
+
+async function writeAny<T>(file: string, value: T, message: string): Promise<void> {
+  if (USE_GITHUB) {
+    const json = JSON.stringify(value, null, 2) + "\n";
+    await ghWrite(`.data/${file}`, json, message);
+    return;
+  }
+  await writeJsonFs(file, value);
+}
+
+function today(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 // ---- Lunch ----------------------------------------------------------------
 
+/**
+ * For public consumers (the LunchWidget). Reads the bundled JSON — fast,
+ * no API quota. After an admin save on Vercel, the new value lands here
+ * once the redeploy finishes (~30s).
+ */
 export async function readLunch(): Promise<LunchData> {
-  const data = await readJson<LunchData>("lunch.json", {
+  const data = await readJsonFs<LunchData>("lunch.json", {
+    updated: undefined,
+    menus: {},
+  });
+  return { updated: data.updated, menus: data.menus ?? {} };
+}
+
+/** For the admin UI — sees the just-saved value immediately. */
+export async function readLunchFresh(): Promise<LunchData> {
+  const data = await readFresh<LunchData>("lunch.json", {
     updated: undefined,
     menus: {},
   });
@@ -78,16 +203,25 @@ export async function readLunch(): Promise<LunchData> {
 }
 
 export async function writeLunch(next: LunchData): Promise<void> {
-  await writeJson("lunch.json", {
-    updated: today(),
-    menus: next.menus,
-  });
+  await writeAny(
+    "lunch.json",
+    { updated: today(), menus: next.menus },
+    "chore(admin): update lunch menu",
+  );
 }
 
 // ---- Milestones -----------------------------------------------------------
 
 export async function readMilestones(): Promise<MilestonesData> {
-  const data = await readJson<MilestonesData>("milestones.json", {
+  const data = await readJsonFs<MilestonesData>("milestones.json", {
+    updated: undefined,
+    milestones: [],
+  });
+  return { updated: data.updated, milestones: data.milestones ?? [] };
+}
+
+export async function readMilestonesFresh(): Promise<MilestonesData> {
+  const data = await readFresh<MilestonesData>("milestones.json", {
     updated: undefined,
     milestones: [],
   });
@@ -95,16 +229,25 @@ export async function readMilestones(): Promise<MilestonesData> {
 }
 
 export async function writeMilestones(next: MilestonesData): Promise<void> {
-  await writeJson("milestones.json", {
-    updated: today(),
-    milestones: next.milestones,
-  });
+  await writeAny(
+    "milestones.json",
+    { updated: today(), milestones: next.milestones },
+    "chore(admin): update countdown milestones",
+  );
 }
 
 // ---- Links ----------------------------------------------------------------
 
 export async function readLinks(): Promise<LinksData> {
-  const data = await readJson<LinksData>("links.json", {
+  const data = await readJsonFs<LinksData>("links.json", {
+    updated: undefined,
+    categories: [],
+  });
+  return { updated: data.updated, categories: data.categories ?? [] };
+}
+
+export async function readLinksFresh(): Promise<LinksData> {
+  const data = await readFresh<LinksData>("links.json", {
     updated: undefined,
     categories: [],
   });
@@ -112,15 +255,16 @@ export async function readLinks(): Promise<LinksData> {
 }
 
 export async function writeLinks(next: LinksData): Promise<void> {
-  await writeJson("links.json", {
-    updated: today(),
-    categories: next.categories,
-  });
+  await writeAny(
+    "links.json",
+    { updated: today(), categories: next.categories },
+    "chore(admin): update quick links",
+  );
 }
 
-// ---- helpers --------------------------------------------------------------
+// ---- mode introspection ---------------------------------------------------
 
-function today(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+/** Surfaced in the admin UI so the editor knows redeploy lag is expected. */
+export function getStorageMode(): "github" | "filesystem" {
+  return USE_GITHUB ? "github" : "filesystem";
 }

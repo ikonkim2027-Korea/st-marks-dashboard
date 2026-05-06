@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-guard";
-import { readLunch, writeLunch, type LunchData } from "@/lib/data-store";
+import {
+  readLunchFresh,
+  writeLunch,
+  type LunchData,
+} from "@/lib/data-store";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const denied = await requireAdmin();
   if (denied) return denied;
-  return NextResponse.json(await readLunch());
+  return NextResponse.json(await readLunchFresh());
 }
 
 export async function PUT(req: NextRequest) {

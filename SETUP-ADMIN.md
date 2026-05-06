@@ -1,99 +1,121 @@
-# Admin Setup — Step by Step
+# Admin Setup — Vercel Production
 
-The dashboard ships with an admin area at `/admin` that lets you edit the
-lunch menu, countdown milestones, and quick links from a UI instead of
-hand-editing JSON. Sign-in is gated to the email allowlist in
-[`src/auth.config.ts`](./src/auth.config.ts) (currently `ikonkim2027@gmail.com`).
+The dashboard ships with an admin area at
+[https://st-marks-dashboard.vercel.app/admin](https://st-marks-dashboard.vercel.app/admin)
+that lets you edit the lunch menu, countdown, and quick links from a UI
+instead of hand-editing JSON. Sign-in is restricted to the email
+allowlist in [`src/auth.config.ts`](./src/auth.config.ts) (currently
+`ikonkim2027@gmail.com`).
 
-This guide gets you signed in for local development. You only do it once.
+This guide gets the admin working **on the live Vercel site**. You only do
+it once, takes ~10 min.
+
+> **How saves work on Vercel.** Vercel filesystem is read-only at runtime,
+> so the admin commits each save to GitHub via the Contents API. That
+> commit triggers a Vercel auto-deploy and the public widgets pick up the
+> new JSON in ~30s. The admin editor itself reads through the GitHub API
+> too, so you see your save right away — no waiting for the deploy.
 
 ---
 
-## 1. Make a Google OAuth client (5 min)
+## Step 1 · Create the Google OAuth client
 
-1. Open https://console.cloud.google.com/ and sign in with your admin Google
-   account (the one in the allowlist).
-2. Top bar → project selector → **New Project**. Name it
-   `sm-hub-admin` (anything works). Click **Create**.
-3. Left nav → **APIs & Services** → **OAuth consent screen**.
-   - User type: **External**. Click **Create**.
-   - App name: `SM Hub Admin`. Support email: your Gmail.
-   - Developer contact: your Gmail. Click **Save and continue**.
-   - Scopes screen → **Save and continue** (no scopes to add).
-   - Test users → **+ Add users** → add your Gmail. **Save and continue**.
-   - Summary → **Back to dashboard**.
-4. Left nav → **APIs & Services** → **Credentials** →
-   **+ Create credentials** → **OAuth client ID**.
-   - Application type: **Web application**.
-   - Name: `SM Hub Localhost`.
-   - Authorized redirect URIs → **+ Add URI**:
+1. Open https://console.cloud.google.com/ signed in as `ikonkim2027@gmail.com`.
+2. Top bar project selector → **NEW PROJECT** → name `sm-hub-admin` → **CREATE**.
+3. Left ☰ → **APIs & Services** → **OAuth consent screen** → **Get started**.
+   - App name: `SM Hub Admin`
+   - User support email: your Gmail
+   - Audience: **External**
+   - Contact: your Gmail → **Continue** → agree → **Create**.
+4. Left ☰ → **OAuth consent screen** → **Audience** tab → **Test users**
+   → **+ ADD USERS** → add your Gmail → **SAVE**.
+   ⚠ This step is required — Testing-mode apps reject everyone except
+   listed test users.
+5. Left ☰ → **Clients** (or **Credentials**) → **+ CREATE CLIENT**.
+   - Application type: **Web application**
+   - Name: `SM Hub Vercel`
+   - Authorized redirect URIs → **+ ADD URI** (paste each one exactly,
+     no trailing slash):
      ```
+     https://st-marks-dashboard.vercel.app/api/auth/callback/google
      http://localhost:3000/api/auth/callback/google
      ```
-   - Click **Create**. A modal pops up with **Client ID** and **Client
-     secret**. Keep this tab open.
+     (Localhost is optional but lets you also test admin during `npm run dev`.)
+   - **CREATE**
 
-## 2. Drop secrets into `.env.local`
+The modal that pops up shows **Client ID** and **Client secret**. Keep that
+tab open — you'll paste both into Vercel in Step 3.
 
-In the project root:
+## Step 2 · Create a fine-grained GitHub PAT
 
-```bash
-cp .env.example .env.local
-```
+The admin needs write access to `.data/*.json` in your repo.
 
-Open `.env.local` and fill in three values:
+1. https://github.com/settings/personal-access-tokens/new
+2. **Token name**: `sm-hub-admin`
+3. **Expiration**: 1 year (renew when it expires)
+4. **Repository access**: **Only select repositories** →
+   pick `ikonkim2027-Korea/st-marks-dashboard`.
+5. **Repository permissions**:
+   - **Contents**: **Read and write** ← this is the only one that matters
+   - Everything else: leave at "No access"
+6. **Generate token** → copy the token starting with `github_pat_…`. You
+   won't see it again.
 
-```
-AUTH_SECRET=<paste output of: npx auth secret>
-AUTH_GOOGLE_ID=<Client ID from step 1.4>
-AUTH_GOOGLE_SECRET=<Client secret from step 1.4>
-```
+## Step 3 · Add env vars to Vercel
 
-`npx auth secret` will write `AUTH_SECRET` for you automatically — just run
-it once and accept. If it doesn't, generate one with:
+1. Go to your project at https://vercel.com/ → **Settings** → **Environment
+   Variables**.
+2. Add these five (Production scope is enough; tick all envs if you want
+   them in Preview/Dev too):
 
-```bash
-openssl rand -base64 32
-```
+   | Name | Value |
+   |---|---|
+   | `AUTH_SECRET` | Run `openssl rand -base64 32` locally, paste output |
+   | `AUTH_GOOGLE_ID` | Client ID from Step 1.5 |
+   | `AUTH_GOOGLE_SECRET` | Client secret from Step 1.5 |
+   | `GITHUB_TOKEN` | PAT from Step 2 |
+   | `GITHUB_REPO` | `ikonkim2027-Korea/st-marks-dashboard` |
 
-`.env.local` is already gitignored so secrets won't end up on GitHub.
+   `GITHUB_BRANCH` defaults to `main`; only set it if you want to write to
+   a different branch.
 
-## 3. Sign in
+3. **Deployments** tab → on the latest production deploy → ⋯ menu →
+   **Redeploy** so the new env vars take effect.
 
-```bash
-npm run dev
-```
+## Step 4 · Sign in
 
-Open http://localhost:3000/admin/login and click **Continue with Google**.
-Pick the allowlisted account. You'll land on the admin home with three
-tiles: Lunch, Countdown, Quick Links.
+1. Open https://st-marks-dashboard.vercel.app/admin/login
+2. Click **Continue with Google** → pick your allowlisted Gmail
+3. Google warns "Google hasn't verified this app" because the OAuth client
+   is in Testing mode → **Advanced** → **Go to SM Hub Admin (unsafe)** →
+   allow.
+4. You land on `/admin` with three tiles. Done.
 
-If you see "isn't on the admin allowlist", you're signed in with the wrong
-Google account. Sign out and use the right one.
+## Step 5 · Try a save
 
-## 4. Edit something
+1. **Quick Links** → add a new link → **Save**.
+2. Admin editor refresh: the new link is there immediately (admin reads
+   from GitHub).
+3. Open https://st-marks-dashboard.vercel.app/ in a new tab. Wait ~30s
+   then refresh — the new link shows up in the public Quick Links widget.
 
-Try **Quick Links** → add a category → add a link → **Save**. Refresh the
-public dashboard at http://localhost:3000/ — the new link appears
-immediately. Behind the scenes the admin writes to
-[`.data/links.json`](./.data/links.json), and the widget re-reads on each
-request (`dynamic = "force-dynamic"`).
-
-## 5. Publish your edits
-
-Local edits live in `.data/*.json`. To get them onto the live site (or just
-into version control), commit the files:
-
-```bash
-git add .data/
-git commit -m "chore: update lunch menu / links / milestones"
-git push
-```
-
-If you've connected the repo to Vercel or another host with auto-deploy,
-the change goes live on push.
+Each save also lands as a commit on `main` you can see in the GitHub
+history with author name "SM Hub Admin".
 
 ---
+
+## Local development (optional)
+
+If you also want admin to work via `npm run dev` on your laptop:
+
+1. `cp .env.example .env.local` and fill in `AUTH_SECRET`, `AUTH_GOOGLE_ID`,
+   `AUTH_GOOGLE_SECRET`. **Leave `GITHUB_TOKEN` unset** — without it the
+   admin falls back to writing the local `.data/*.json` file directly,
+   which is what you usually want for a dev loop.
+2. `npm run dev` → http://localhost:3000/admin/login.
+
+The admin sidebar shows a small badge — **"Local mode"** when writing to
+disk, **"GitHub mode"** when committing.
 
 ## Adding more admins
 
@@ -106,30 +128,30 @@ export const ADMIN_EMAILS = new Set<string>([
 ]);
 ```
 
-Commit + redeploy. They sign in with their Google account.
-
-## Hosting on Vercel / serverless
-
-The current admin writes to the local filesystem. Vercel's filesystem is
-read-only at runtime, so save buttons would fail there. Two paths forward
-when you're ready to deploy:
-
-1. **Switch the data store to Vercel KV / Upstash Redis**: rewrite
-   `src/lib/data-store.ts` to read/write via the KV client. Everything
-   else stays the same.
-2. **Commit-via-GitHub-API**: have the save handlers PUT a new
-   `.data/*.json` blob through the GitHub Contents API, which retriggers
-   the Vercel deploy. Needs a fine-scoped GitHub PAT in env.
-
-Either path is a focused refactor of one file (`src/lib/data-store.ts`)
-plus a setup step. Until then, run the admin locally and commit the JSON.
+Then add the same Gmail to **OAuth consent screen → Test users** in Google
+Cloud (Step 1.4). Commit + push and the new admin can sign in.
 
 ## Troubleshooting
 
-- **`AUTH_SECRET environment variable missing`**: make sure
-  `.env.local` exists and `npm run dev` was restarted after editing it.
-- **"redirect_uri_mismatch"**: the URI you pasted into Google Cloud
-  doesn't exactly match `http://localhost:3000/api/auth/callback/google`.
-  Match it character-for-character (no trailing slash).
-- **Stuck signed in as the wrong Google account**: sign out at
-  `https://accounts.google.com`, then retry.
+- **"redirect_uri_mismatch"** on Google sign-in: the URI you pasted into
+  the OAuth client doesn't exactly match. Production URI must be
+  `https://st-marks-dashboard.vercel.app/api/auth/callback/google` —
+  no trailing slash, exact case.
+- **"This app isn't verified" / "Access blocked"**: your Gmail isn't in
+  the OAuth client's **Test users** list. Add it (Step 1.4) and retry.
+- **Admin Save returns 500**: GitHub PAT is missing/expired or doesn't
+  have `Contents: write` on this repo. Re-issue and update Vercel env vars.
+- **Saved but public site doesn't update**: confirm the commit landed on
+  `main` (check the repo's commit log) and that Vercel did a redeploy
+  (project's Deployments tab).
+- **Locked out**: sign out at https://accounts.google.com and retry.
+
+## What if I leave Vercel later?
+
+Storage is isolated to [`src/lib/data-store.ts`](./src/lib/data-store.ts).
+Two ways to swap it:
+
+- **Vercel KV / Upstash Redis**: replace `ghRead`/`ghWrite` with the KV
+  client. Removes the redeploy lag.
+- **Self-host on a VPS**: just unset `GITHUB_TOKEN` and the admin will
+  write to the local filesystem like local dev.

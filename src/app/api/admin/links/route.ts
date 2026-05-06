@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin-guard";
-import { readLinks, writeLinks, type LinksData } from "@/lib/data-store";
+import {
+  readLinksFresh,
+  writeLinks,
+  type LinksData,
+} from "@/lib/data-store";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const denied = await requireAdmin();
   if (denied) return denied;
-  return NextResponse.json(await readLinks());
+  return NextResponse.json(await readLinksFresh());
 }
 
 export async function PUT(req: NextRequest) {
