@@ -37,14 +37,14 @@ const WIDGETS: Record<WidgetKey, () => React.ReactNode> = {
 };
 
 const DEFAULT_ORDER: WidgetKey[] = [
-  "lunch",
   "news",
-  "athletics",
-  "countdown",
-  "calendar",
-  "notes",
-  "highlight",
   "instagram",
+  "notes",
+  "athletics",
+  "calendar",
+  "highlight",
+  "countdown",
+  "lunch",
 ];
 
 const ALL_KEYS = new Set<WidgetKey>(DEFAULT_ORDER);
