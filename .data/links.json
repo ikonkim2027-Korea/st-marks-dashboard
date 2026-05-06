@@ -10,8 +10,8 @@
         { "id": "blackbaud", "name": "Blackbaud Portal", "url": "https://www.stmarksschool.org/login", "icon": "Lock", "hint": "Grades · forms" },
         { "id": "college-counseling", "name": "College Counseling", "url": "https://www.stmarksschool.org/academics/college-counseling", "icon": "GraduationCap" },
         { "id": "library", "name": "Library", "url": "https://www.stmarksschool.org/academics/library", "icon": "BookMarked" },
-        { "id": "academic-support", "name": "Academic Support", "url": "https://www.stmarksschool.org/academics/learning-services", "icon": "PenTool", "hint": "Learning services" },
-        { "id": "course-catalog", "name": "Course Catalog", "url": "https://www.stmarksschool.org/academics/curriculum", "icon": "FileText" }
+        { "id": "academic-support", "name": "Academic Support", "url": "https://www.stmarksschool.org/academics/the-burgess-center/academic-support", "icon": "PenTool", "hint": "Learning services" },
+        { "id": "course-catalog", "name": "Course Catalog", "url": "https://docs.google.com/document/d/14KqHYqFhtP_-lGwKFSxB1bkjrjXg036GmpFfT-2nlQE/edit?usp=sharing", "icon": "FileText" }
       ]
     },
     {
@@ -23,7 +23,7 @@
         { "id": "weekend", "name": "Weekend Activities", "url": "https://www.stmarksschool.org/community/student-life/weekend-activities", "icon": "PartyPopper" },
         { "id": "handbook", "name": "Student Handbook", "url": "https://www.stmarksschool.org/community/student-life/student-handbook", "icon": "FileText" },
         { "id": "residential", "name": "Residential Life", "url": "https://www.stmarksschool.org/community/residential-life", "icon": "School" },
-        { "id": "chapel", "name": "Chapel", "url": "https://www.stmarksschool.org/community/student-life/chapel", "icon": "Cross" }
+        { "id": "chapel", "name": "Chapel", "url": "https://www.stmarksschool.org/community/chapel", "icon": "Cross" }
       ]
     },
     {
@@ -40,9 +40,9 @@
       "id": "international",
       "label": "International",
       "links": [
-        { "id": "intl-students", "name": "International Students", "url": "https://www.stmarksschool.org/admission/international-students", "icon": "Globe2" },
+        { "id": "intl-students", "name": "International Students", "url": "https://www.stmarksschool.org/admission/apply/international-applicants", "icon": "Globe2" },
         { "id": "translate", "name": "Google Translate", "url": "https://translate.google.com", "icon": "Languages" },
-        { "id": "consulates", "name": "Boston Consulates", "url": "https://www.state.gov/foreign-consular-offices-in-the-united-states/", "icon": "Globe2", "hint": "Find your consulate" },
+        { "id": "consulates", "name": "Boston Consulates", "url": "https://travel.state.gov/content/travel/en/consularnotification/ConsularNotificationandAccess.html", "icon": "Globe2", "hint": "Find your consulate" },
         { "id": "logan", "name": "Logan Airport", "url": "https://www.massport.com/logan-airport/", "icon": "Globe2" }
       ]
     },
@@ -51,7 +51,7 @@
       "label": "Transit",
       "links": [
         { "id": "mbta", "name": "MBTA Worcester Line", "url": "https://www.mbta.com/schedules/CR-Worcester", "icon": "Bus" },
-        { "id": "uber", "name": "Uber", "url": "https://m.uber.com/", "icon": "Bus" },
+        { "id": "uber", "name": "Uber", "url": "https://m.uber.com/ul/?action=setPickup", "icon": "Bus" },
         { "id": "lyft", "name": "Lyft", "url": "https://ride.lyft.com/", "icon": "Bus" },
         { "id": "weather-hourly", "name": "Hourly Weather", "url": "https://forecast.weather.gov/MapClick.php?lat=42.3056&lon=-71.5245", "icon": "Globe2" }
       ]
@@ -65,7 +65,7 @@
         { "id": "store", "name": "School Store", "url": "https://www.stmarksschool.org/community/school-store", "icon": "ShoppingBag" },
         { "id": "smugmug", "name": "SmugMug Photos", "url": "https://stmarkslions.smugmug.com/", "icon": "ImageIcon" },
         { "id": "athletics-page", "name": "Athletics Page", "url": "https://www.stmarksschool.org/athletics", "icon": "Trophy" },
-        { "id": "arts", "name": "Performing Arts", "url": "https://www.stmarksschool.org/academics/arts", "icon": "Music" }
+        { "id": "arts", "name": "Performing Arts", "url": "https://www.stmarksschool.org/arts", "icon": "Music" }
       ]
     },
     {
