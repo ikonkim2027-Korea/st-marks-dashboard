@@ -8,20 +8,13 @@ interface CalEvent {
   start: string;
   end: string | null;
   category: string;
+  allDay: boolean;
 }
 
-function decodeEntities(s: string): string {
-  return s
-    .replace(/&quot;/g, '"')
-    .replace(/&amp;/g, "&")
-    .replace(/&#39;/g, "'")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&#8217;/g, "’")
-    .replace(/&rsquo;/g, "’")
-    .replace(/&ldquo;/g, "“")
-    .replace(/&rdquo;/g, "”");
+interface CalendarFeed {
+  calendarid: number;
+  calendarname: string;
+  liveURL?: string;
 }
 
 function inferCategory(title: string): string {
@@ -36,15 +29,98 @@ function inferCategory(title: string): string {
   return "school";
 }
 
-async function fetchMonth(year: number, month: number): Promise<string> {
-  // School site uses MM/DD/YYYY format for cal_date
-  const url = `https://www.stmarksschool.org/about/calendar?cal_date=${String(
-    month,
-  ).padStart(2, "0")}/01/${year}`;
+const FEEDS_URL =
+  "https://www.stmarksschool.org/cf_endpoints/routes.cfm/calendars.json?calendar_ids=387,382";
+
+const FALLBACK_ICS_URLS = [
+  "https://calendar.google.com/calendar/ical/web-alleventscalendar%40stmarksschool.org/public/basic.ics",
+  "https://calendar.google.com/calendar/ical/web-admissioncalendar%40stmarksschool.org/public/basic.ics",
+];
+
+const SCHOOL_TIME_ZONE = "America/New_York";
+
+function cleanIcsText(value: string): string {
+  return value
+    .replace(/\\n/g, " ")
+    .replace(/\\,/g, ",")
+    .replace(/\\;/g, ";")
+    .replace(/\\\\/g, "\\")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function unfoldIcs(text: string): string[] {
+  return text.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
+}
+
+function getIcsValue(line: string): string {
+  const idx = line.indexOf(":");
+  return idx === -1 ? "" : cleanIcsText(line.slice(idx + 1));
+}
+
+function parseIcsDate(line: string): { value: string; allDay: boolean } | null {
+  const raw = getIcsValue(line);
+  const allDay = /(^|;)VALUE=DATE(;|:)/.test(line);
+
+  if (allDay && /^\d{8}$/.test(raw)) {
+    return {
+      value: `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(
+        6,
+        8,
+      )}T00:00:00-04:00`,
+      allDay: true,
+    };
+  }
+
+  if (/^\d{8}T\d{6}Z$/.test(raw)) {
+    const date = new Date(
+      raw.replace(
+        /(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z/,
+        "$1-$2-$3T$4:$5:$6Z",
+      ),
+    );
+    return { value: date.toISOString(), allDay: false };
+  }
+
+  if (/^\d{8}T\d{6}$/.test(raw)) {
+    return {
+      value: `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(
+        6,
+        8,
+      )}T${raw.slice(9, 11)}:${raw.slice(11, 13)}:${raw.slice(13, 15)}-04:00`,
+      allDay: false,
+    };
+  }
+
+  return null;
+}
+
+async function fetchIcsUrls(): Promise<string[]> {
+  const res = await fetch(FEEDS_URL, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (compatible; StMarksDashboard/1.0; +https://stmarksschool.org)",
+      Accept: "application/json",
+    },
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) return FALLBACK_ICS_URLS;
+
+  const calendars = (await res.json()) as CalendarFeed[];
+  const urls = calendars
+    .map((calendar) => calendar.liveURL)
+    .filter((url): url is string => Boolean(url));
+
+  return urls.length > 0 ? urls : FALLBACK_ICS_URLS;
+}
+
+async function fetchCalendar(url: string): Promise<string> {
   const res = await fetch(url, {
     headers: {
       "User-Agent":
         "Mozilla/5.0 (compatible; StMarksDashboard/1.0; +https://stmarksschool.org)",
+      Accept: "text/calendar,text/plain;q=0.9,*/*;q=0.8",
     },
     next: { revalidate: 3600 },
   });
@@ -52,85 +128,77 @@ async function fetchMonth(year: number, month: number): Promise<string> {
   return res.text();
 }
 
-function parseEvents(html: string): CalEvent[] {
-  const out: CalEvent[] = [];
+function parseEvents(ics: string): CalEvent[] {
+  const events: CalEvent[] = [];
+  let current: Partial<CalEvent> | null = null;
 
-  // Walk the page in document order so we can track the most recent
-  // <div class="fsCalendarDate" data-day data-year data-month> header. That
-  // header is required to date all-day events, which carry no <time> element.
-  // Block boundary stops at the next fsCalendarInfo / fsCalendarDaybox /
-  // fsCalendarMonthGrid (or end-of-string), which is what actually separates
-  // entries on the rendered school calendar.
-  const tokenRegex =
-    /<div class="fsCalendarDate"\s+data-day="(\d+)"\s+data-year="(\d+)"\s+data-month="(\d+)"|<div class="fsCalendarInfo">([\s\S]*?)(?=<div class="fsCalendar(?:Info|Daybox|MonthGrid)|<\/body>|$)/g;
-
-  let currentDate: { year: number; month: number; day: number } | null = null;
-  let m: RegExpExecArray | null;
-
-  while ((m = tokenRegex.exec(html)) !== null) {
-    if (m[1] && m[2] && m[3]) {
-      currentDate = {
-        year: parseInt(m[2], 10),
-        month: parseInt(m[3], 10), // school site uses 0-indexed month
-        day: parseInt(m[1], 10),
-      };
+  for (const line of unfoldIcs(ics)) {
+    if (line === "BEGIN:VEVENT") {
+      current = {};
       continue;
     }
 
-    const block = m[4];
-    if (!block) continue;
-
-    const titleMatch = block.match(
-      /<a[^>]*class="fsCalendarEventTitle[^"]*"[^>]*data-occur-id="(\d+)"[^>]*>([\s\S]*?)<\/a>/,
-    );
-    if (!titleMatch) continue;
-
-    const id = titleMatch[1];
-    const title = decodeEntities(
-      titleMatch[2].replace(/<[^>]+>/g, "").trim().replace(/\s+/g, " "),
-    );
-    if (!title) continue;
-
-    const startMatch = block.match(
-      /<time datetime="([^"]+)"[^>]*class="fsStartTime"/,
-    );
-    const endMatch = block.match(
-      /<time datetime="([^"]+)"[^>]*class="fsEndTime"/,
-    );
-
-    let start: string;
-    let end: string | null = null;
-
-    if (startMatch) {
-      start = startMatch[1];
-      end = endMatch ? endMatch[1] : null;
-    } else if (currentDate && /fsAllDayEvent/.test(block)) {
-      const mm = String(currentDate.month + 1).padStart(2, "0");
-      const dd = String(currentDate.day).padStart(2, "0");
-      start = `${currentDate.year}-${mm}-${dd}T12:00:00-04:00`;
-    } else {
+    if (line === "END:VEVENT") {
+      if (current?.id && current.title && current.start) {
+        events.push({
+          id: current.id,
+          title: current.title,
+          start: current.start,
+          end: current.end ?? null,
+          category: inferCategory(current.title),
+          allDay: current.allDay ?? false,
+        });
+      }
+      current = null;
       continue;
     }
 
-    out.push({ id, title, start, end, category: inferCategory(title) });
+    if (!current) continue;
+
+    if (line.startsWith("UID")) {
+      current.id = getIcsValue(line);
+    } else if (line.startsWith("SUMMARY")) {
+      current.title = getIcsValue(line);
+    } else if (line.startsWith("DTSTART")) {
+      const parsed = parseIcsDate(line);
+      if (parsed) {
+        current.start = parsed.value;
+        current.allDay = parsed.allDay;
+      }
+    } else if (line.startsWith("DTEND")) {
+      current.end = parseIcsDate(line)?.value ?? null;
+    }
   }
 
-  return out;
+  return events;
+}
+
+function dateKeyInSchoolTime(date: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: SCHOOL_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  return `${year}-${month}-${day}`;
+}
+
+function eventDateKey(event: CalEvent): string {
+  return event.allDay ? event.start.slice(0, 10) : dateKeyInSchoolTime(new Date(event.start));
 }
 
 export async function GET() {
   try {
-    const now = new Date();
-    const months: Promise<string>[] = [];
-    for (let i = 0; i < 2; i++) {
-      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-      months.push(fetchMonth(d.getFullYear(), d.getMonth() + 1));
-    }
-    const htmls = await Promise.all(months);
+    const urls = await fetchIcsUrls();
+    const calendars = await Promise.all(urls.map(fetchCalendar));
     const seen = new Set<string>();
     const events: CalEvent[] = [];
-    for (const html of htmls) {
-      for (const ev of parseEvents(html)) {
+    for (const calendar of calendars) {
+      for (const ev of parseEvents(calendar)) {
         const key = `${ev.id}-${ev.start}`;
         if (seen.has(key)) continue;
         seen.add(key);
@@ -138,12 +206,11 @@ export async function GET() {
       }
     }
 
-    const todayMidnight = new Date();
-    todayMidnight.setHours(0, 0, 0, 0);
+    const todayKey = dateKeyInSchoolTime(new Date());
     // Athletics events live in a dedicated widget — keep this calendar focused
     // on school-wide events (concerts, chapel, breaks, fairs, programs).
     const upcoming = events
-      .filter((e) => new Date(e.start).getTime() >= todayMidnight.getTime())
+      .filter((e) => eventDateKey(e) >= todayKey)
       .filter((e) => e.category !== "athletics")
       .sort((a, b) => a.start.localeCompare(b.start))
       .slice(0, 12);

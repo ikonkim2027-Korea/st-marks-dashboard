@@ -10,11 +10,36 @@ interface CalEvent {
   start: string;
   end: string | null;
   category: string;
+  allDay: boolean;
 }
 
 const TZ = "America/New_York";
 
-function parseDate(iso: string): { day: string; month: string; time: string } {
+function parseDate(
+  iso: string,
+  allDay: boolean,
+): { day: string; month: string; time: string } {
+  if (allDay) {
+    const monthIndex = Number(iso.slice(5, 7)) - 1;
+    const day = String(Number(iso.slice(8, 10)));
+    const month = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC",
+    ][monthIndex];
+
+    return { day, month: month ?? "", time: "" };
+  }
+
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return { day: "", month: "", time: "" };
   const fmtParts = new Intl.DateTimeFormat("en-US", {
@@ -32,18 +57,6 @@ function parseDate(iso: string): { day: string; month: string; time: string } {
     timeZone: TZ,
   });
   return { day, month, time };
-}
-
-function isAllDay(start: string): boolean {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: TZ,
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false,
-  }).formatToParts(new Date(start));
-  const hour = parts.find((p) => p.type === "hour")?.value ?? "";
-  const minute = parts.find((p) => p.type === "minute")?.value ?? "";
-  return hour === "00" && minute === "00";
 }
 
 export function CalendarWidget() {
@@ -116,9 +129,8 @@ export function CalendarWidget() {
       ) : (
         <ul className="space-y-0 flex-1" aria-label="Upcoming calendar events">
           {events.slice(0, 6).map((event, idx) => {
-            const { day, month, time } = parseDate(event.start);
+            const { day, month, time } = parseDate(event.start, event.allDay);
             const isFirst = idx === 0;
-            const allDay = isAllDay(event.start);
             return (
               <li
                 key={event.id + event.start}
@@ -145,7 +157,7 @@ export function CalendarWidget() {
                     <span className="uppercase tracking-wider">
                       {event.category}
                     </span>
-                    {!allDay && time && (
+                    {!event.allDay && time && (
                       <>
                         <span className="text-sm-border" aria-hidden="true">
                           ·
