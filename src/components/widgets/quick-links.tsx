@@ -68,7 +68,7 @@ const links: LinkItem[] = [
   // International
   { name: "International Students", url: "https://www.stmarksschool.org/admission/international-students", icon: <Globe2 className={ICON} />, category: "International" },
   { name: "Google Translate", url: "https://translate.google.com", icon: <Languages className={ICON} />, category: "International" },
-  { name: "Korean Consulate (Boston)", url: "https://overseas.mofa.go.kr/us-boston-en/index.do", icon: <Globe2 className={ICON} />, category: "International", hint: "Passport · visa" },
+  { name: "Boston Consulates", url: "https://www.state.gov/foreign-consular-offices-in-the-united-states/", icon: <Globe2 className={ICON} />, category: "International", hint: "Find your consulate" },
   { name: "Logan Airport", url: "https://www.massport.com/logan-airport/", icon: <Globe2 className={ICON} />, category: "International" },
 
   // Transportation
