@@ -3,23 +3,9 @@
 import { useEffect, useState } from "react";
 import {
   AlertCircle,
-  Bike,
-  BicepsFlexed,
-  Circle,
-  CircleDot,
-  Club,
-  Dumbbell,
-  Flag,
-  Footprints,
-  Goal,
   Home,
   Plane,
-  Shield,
-  Target,
   Trophy,
-  Volleyball,
-  Waves,
-  type LucideIcon,
 } from "lucide-react";
 import { WidgetShell } from "./widget-shell";
 
@@ -56,109 +42,188 @@ function formatDate(iso: string): { date: string; time: string } {
 }
 
 type SportIconSpec = {
-  Icon: LucideIcon;
+  type: SportGlyphType;
   className: string;
   bgClassName: string;
 };
+
+type SportGlyphType =
+  | "baseball"
+  | "basketball"
+  | "crew"
+  | "cycling"
+  | "field-hockey"
+  | "football"
+  | "golf"
+  | "lacrosse"
+  | "running"
+  | "skiing"
+  | "soccer"
+  | "softball"
+  | "squash"
+  | "swimming"
+  | "tennis"
+  | "volleyball"
+  | "wrestling"
+  | "generic";
 
 function getSportIcon(sport: string): SportIconSpec {
   const normalized = sport.toLowerCase();
   if (normalized.includes("golf")) {
     return {
-      Icon: Club,
+      type: "golf",
       className: "text-sm-success",
       bgClassName: "bg-sm-success/10 border-sm-success/20",
     };
   }
-  if (normalized.includes("baseball") || normalized.includes("softball")) {
+  if (normalized.includes("baseball")) {
     return {
-      Icon: CircleDot,
+      type: "baseball",
       className: "text-sm-orange",
       bgClassName: "bg-sm-orange/10 border-sm-orange/20",
     };
   }
+  if (normalized.includes("softball")) {
+    return {
+      type: "softball",
+      className: "text-sm-gold",
+      bgClassName: "bg-sm-gold/12 border-sm-gold/25",
+    };
+  }
   if (normalized.includes("tennis") || normalized.includes("squash")) {
     return {
-      Icon: Circle,
+      type: normalized.includes("squash") ? "squash" : "tennis",
       className: "text-sm-gold",
       bgClassName: "bg-sm-gold/12 border-sm-gold/25",
     };
   }
   if (normalized.includes("soccer")) {
     return {
-      Icon: Goal,
+      type: "soccer",
       className: "text-sm-navy",
       bgClassName: "bg-sm-navy/8 border-sm-navy/15",
     };
   }
   if (normalized.includes("basketball")) {
     return {
-      Icon: CircleDot,
+      type: "basketball",
       className: "text-sm-orange",
       bgClassName: "bg-sm-orange/10 border-sm-orange/20",
     };
   }
   if (normalized.includes("volleyball")) {
     return {
-      Icon: Volleyball,
+      type: "volleyball",
       className: "text-sm-navy-light",
       bgClassName: "bg-sm-navy/8 border-sm-navy/15",
     };
   }
   if (normalized.includes("football")) {
     return {
-      Icon: Shield,
+      type: "football",
       className: "text-sm-navy",
       bgClassName: "bg-sm-navy/8 border-sm-navy/15",
     };
   }
-  if (normalized.includes("hockey") || normalized.includes("lacrosse")) {
+  if (normalized.includes("hockey")) {
     return {
-      Icon: Target,
+      type: "field-hockey",
+      className: "text-sm-navy",
+      bgClassName: "bg-sm-navy/8 border-sm-navy/15",
+    };
+  }
+  if (normalized.includes("lacrosse")) {
+    return {
+      type: "lacrosse",
       className: "text-sm-navy",
       bgClassName: "bg-sm-navy/8 border-sm-navy/15",
     };
   }
   if (normalized.includes("cross country") || normalized.includes("track")) {
     return {
-      Icon: Footprints,
+      type: "running",
       className: "text-sm-success",
       bgClassName: "bg-sm-success/10 border-sm-success/20",
     };
   }
-  if (normalized.includes("crew") || normalized.includes("swim")) {
+  if (normalized.includes("crew")) {
     return {
-      Icon: Waves,
+      type: "crew",
+      className: "text-sm-navy-light",
+      bgClassName: "bg-sm-navy/8 border-sm-navy/15",
+    };
+  }
+  if (normalized.includes("swim")) {
+    return {
+      type: "swimming",
       className: "text-sm-navy-light",
       bgClassName: "bg-sm-navy/8 border-sm-navy/15",
     };
   }
   if (normalized.includes("ski")) {
     return {
-      Icon: Flag,
+      type: "skiing",
       className: "text-sm-gold",
       bgClassName: "bg-sm-gold/12 border-sm-gold/25",
     };
   }
   if (normalized.includes("cycling")) {
     return {
-      Icon: Bike,
+      type: "cycling",
       className: "text-sm-success",
       bgClassName: "bg-sm-success/10 border-sm-success/20",
     };
   }
   if (normalized.includes("wrestling")) {
     return {
-      Icon: BicepsFlexed,
+      type: "wrestling",
       className: "text-sm-orange",
       bgClassName: "bg-sm-orange/10 border-sm-orange/20",
     };
   }
   return {
-    Icon: Dumbbell,
+    type: "generic",
     className: "text-sm-text-muted",
     bgClassName: "bg-sm-cream border-sm-border",
   };
+}
+
+function SportGlyph({
+  type,
+  className,
+}: {
+  type: SportGlyphType;
+  className: string;
+}) {
+  const glyphs: Record<SportGlyphType, string> = {
+    baseball: "⚾",
+    basketball: "🏀",
+    crew: "🚣",
+    cycling: "🚴",
+    "field-hockey": "🏑",
+    football: "🏈",
+    generic: "🏆",
+    golf: "⛳",
+    lacrosse: "🥍",
+    running: "👟",
+    skiing: "⛷️",
+    soccer: "⚽",
+    softball: "🥎",
+    squash: "🎾",
+    swimming: "🏊",
+    tennis: "🎾",
+    volleyball: "🏐",
+    wrestling: "🤼",
+  };
+
+  return (
+    <span
+      aria-hidden="true"
+      className={`block text-[17px] leading-none ${className}`}
+    >
+      {glyphs[type]}
+    </span>
+  );
 }
 
 export function AthleticsWidget() {
@@ -230,7 +295,7 @@ export function AthleticsWidget() {
           {events.slice(0, 6).map((event, idx) => {
             const isNext = idx === 0;
             const { date, time } = formatDate(event.start);
-            const { Icon, className, bgClassName } = getSportIcon(event.sport);
+            const icon = getSportIcon(event.sport);
             const venueWord =
               event.location === "home"
                 ? "home"
@@ -246,10 +311,10 @@ export function AthleticsWidget() {
                 aria-label={`${event.sport}${event.level ? ` ${event.level}` : ""} vs ${event.opponent || "TBD"}${venueWord ? `, ${venueWord} game` : ""} on ${date} at ${time}`}
               >
                 <div
-                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border ${bgClassName}`}
+                  className={`grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border ${icon.bgClassName}`}
                   aria-hidden="true"
                 >
-                  <Icon className={`h-4 w-4 ${className}`} strokeWidth={2.2} />
+                  <SportGlyph type={icon.type} className={icon.className} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex min-w-0 items-baseline gap-2">
